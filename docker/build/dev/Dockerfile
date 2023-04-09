@@ -15,6 +15,10 @@ COPY --from=composer:2.5.5 /usr/bin/composer /usr/bin/composer
 VOLUME /code
 WORKDIR /code
 
+# Xdebug extension
+RUN pecl install xdebug-3.2.1 && docker-php-ext-enable xdebug
+COPY ./docker/build/dev/xdebug.ini /usr/local/etc/php/conf.d/xdebug.ini
+
 ###### Nginx
 FROM nginx:1.15 AS nginx
 COPY ./docker/build/dev/nginx.conf /etc/nginx/conf.d/default.conf
