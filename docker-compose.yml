@@ -1,0 +1,27 @@
+version: "3.7"
+
+services:
+  nginx:
+    build:
+      context: .
+      dockerfile: ./docker/build/dev/Dockerfile
+      target: nginx
+    ports:
+      - "80:80"
+    networks:
+      - default
+    environment:
+      TZ: 'Europe/Kiev'
+    volumes:
+      - .:/code:delegated
+    restart: always
+  php:
+    build:
+      context: "."
+      dockerfile: ./docker/build/dev/Dockerfile
+      target: fpm
+    environment:
+      TZ: 'Europe/Kiev'
+    volumes:
+      - .:/code:delegated
+    restart: always
