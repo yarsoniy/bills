@@ -26,15 +26,23 @@ readonly class Money
     /**
      * @return Money[]
      */
-    public function split(int $parts): array
+    public function split(int $count): array
     {
-        $splitValue = $this->value / $parts;
+        $splitValue = new self($this->value / $count);
 
         $result = [];
-        for ($i = 0; $i < $parts; ++$i) {
-            $result[] = new self($splitValue);
+        for ($i = 0; $i < $count; ++$i) {
+            $result[] = $splitValue;
         }
 
         return $result;
+    }
+
+    public function splitByKey(array $keys): MoneyBreakdown
+    {
+        $keys = array_unique($keys);
+        $values = $this->split(\count($keys));
+
+        return new MoneyBreakdown(array_combine($keys, $values));
     }
 }

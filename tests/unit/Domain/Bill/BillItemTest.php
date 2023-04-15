@@ -6,12 +6,13 @@ namespace App\Tests\unit\Domain\Bill;
 
 use App\Domain\Bill\Model\BillItem;
 use App\Domain\Money\Money;
+use App\Domain\Money\MoneyBreakdown;
 use App\Domain\Participant\ParticipantId;
 use Codeception\Test\Unit;
 
 class BillItemTest extends Unit
 {
-    public function testCalculatePayerSharesEqual()
+    public function testCalculateBreakdownEqual()
     {
         $billItem = new BillItem('Pizza');
         $billItem->setCost(new Money(400));
@@ -25,18 +26,20 @@ class BillItemTest extends Unit
         $billItem->addPaymentDirection($pC, $pC);
         $billItem->addPaymentDirection($pD, $pD);
 
-        $expected = [
-            'participant-A' => new Money(100),
-            'participant-B' => new Money(100),
-            'participant-C' => new Money(100),
-            'participant-D' => new Money(100),
-        ];
-        $actual = $billItem->calculatePayerShares();
+        $expected = new MoneyBreakdown(
+            [
+                'participant-A' => new Money(100),
+                'participant-B' => new Money(100),
+                'participant-C' => new Money(100),
+                'participant-D' => new Money(100),
+            ]
+        );
+        $actual = $billItem->calculateBreakdown();
 
         $this->assertEquals($expected, $actual);
     }
 
-    public function testCalculatePayerSharesAllPayForD()
+    public function testCalculateBreakdownAllPayForD()
     {
         $billItem = new BillItem('Pizza');
         $billItem->setCost(new Money(300));
@@ -53,17 +56,19 @@ class BillItemTest extends Unit
         $billItem->addPaymentDirection($pB, $pD);
         $billItem->addPaymentDirection($pC, $pD);
 
-        $expected = [
-            'participant-A' => new Money(100),
-            'participant-B' => new Money(100),
-            'participant-C' => new Money(100),
-        ];
-        $actual = $billItem->calculatePayerShares();
+        $expected = new MoneyBreakdown(
+            [
+                'participant-A' => new Money(100),
+                'participant-B' => new Money(100),
+                'participant-C' => new Money(100),
+            ]
+        );
+        $actual = $billItem->calculateBreakdown();
 
         $this->assertEquals($expected, $actual);
     }
 
-    public function testCalculatePayerSharesADoesntBuyAllPayForD()
+    public function testCalculateBreakdownADoesntBuyAllPayForD()
     {
         $billItem = new BillItem('Pizza');
         $billItem->setCost(new Money(300));
@@ -79,17 +84,19 @@ class BillItemTest extends Unit
         $billItem->addPaymentDirection($pB, $pD);
         $billItem->addPaymentDirection($pC, $pD);
 
-        $expected = [
-            'participant-A' => new Money(33.33),
-            'participant-B' => new Money(133.33),
-            'participant-C' => new Money(133.33),
-        ];
-        $actual = $billItem->calculatePayerShares();
+        $expected = new MoneyBreakdown(
+            [
+                'participant-A' => new Money(33.33),
+                'participant-B' => new Money(133.33),
+                'participant-C' => new Money(133.33),
+            ]
+        );
+        $actual = $billItem->calculateBreakdown();
 
         $this->assertEqualsWithDelta($expected, $actual, 0.01);
     }
 
-    public function testCalculatePayerSharesCPayForD()
+    public function testCalculateBreakdownCPayForD()
     {
         $billItem = new BillItem('Pizza');
         $billItem->setCost(new Money(400));
@@ -104,12 +111,14 @@ class BillItemTest extends Unit
         $billItem->addPaymentDirection($pC, $pC);
         $billItem->addPaymentDirection($pC, $pD);
 
-        $expected = [
-            'participant-A' => new Money(100),
-            'participant-B' => new Money(100),
-            'participant-C' => new Money(200),
-        ];
-        $actual = $billItem->calculatePayerShares();
+        $expected = new MoneyBreakdown(
+            [
+                'participant-A' => new Money(100),
+                'participant-B' => new Money(100),
+                'participant-C' => new Money(200),
+            ]
+        );
+        $actual = $billItem->calculateBreakdown();
 
         $this->assertEqualsWithDelta($expected, $actual, 0.01);
     }

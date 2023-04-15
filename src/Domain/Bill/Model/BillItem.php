@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Domain\Bill\Model;
 
 use App\Domain\Money\Money;
+use App\Domain\Money\MoneyBreakdown;
 use App\Domain\Participant\ParticipantId;
 
 class BillItem
@@ -55,46 +56,36 @@ class BillItem
         return $this->paymentDirections;
     }
 
-    /**
-     * Index by @see ParticipantId.
-     *
-     * @return Money[]
-     */
-    public function calculatePayerShares(): array
+    public function calculateBreakdown(): MoneyBreakdown
     {
-        $buyerSplits = [];
+        // Find how many Payers will pay for each Buyer share
+        // If the number is 1 than the share is paid by 1 payer
+        // If the number is 3 than the share is divided and paid by 3 payers
+        // etc...
+        $numberOfPayersOfBuyerShare = [];
         foreach ($this->paymentDirections as $direction) {
             $buyerId = $direction->buyer->id;
-            if (!isset($buyerSplits[$buyerId])) {
-                $buyerSplits[$buyerId] = 0;
-            }
-            ++$buyerSplits[$buyerId];
+            $numberOfPayersOfBuyerShare[$buyerId] = $numberOfPayersOfBuyerShare[$buyerId] ?? 0;
+            ++$numberOfPayersOfBuyerShare[$buyerId];
         }
 
-        $uniqueBuyers = array_keys($buyerSplits);
-        $equalShares = $this->cost->split(\count($uniqueBuyers));
-
-        /** @var Money[] $buyerEqualShares */
-        $buyerEqualShares = array_combine($uniqueBuyers, $equalShares);
-
+        // Split the share of each Buyer by number of Payers
+        // Find the amount of money that each payer will pay for each Buyers share
+        $buyerSharesSplitForPayers = $this->cost->splitByKey(array_keys($numberOfPayersOfBuyerShare));
         $buyerSplitShares = [];
-        foreach ($buyerEqualShares as $buyerId => $share) {
-            $splitNumber = $buyerSplits[$buyerId];
+        foreach ($buyerSharesSplitForPayers->items as $buyerId => $share) {
+            $splitNumber = $numberOfPayersOfBuyerShare[$buyerId];
             $buyerSplitShares[$buyerId] = $share->split($splitNumber);
         }
 
-        /** @var Money[] $payerShares */
-        $payerShares = [];
+        // Find how many each Payer should pay
+        $payerShares = new MoneyBreakdown();
         foreach ($this->paymentDirections as $direction) {
             $payerId = $direction->payer->id;
-            if (!isset($payerShares[$payerId])) {
-                $payerShares[$payerId] = new Money();
-            }
 
             /** @var Money $shareToAdd */
             $shareToAdd = array_shift($buyerSplitShares[$direction->buyer->id]);
-
-            $payerShares[$payerId] = $payerShares[$payerId]->add($shareToAdd);
+            $payerShares = $payerShares->add($payerId, $shareToAdd);
         }
 
         return $payerShares;

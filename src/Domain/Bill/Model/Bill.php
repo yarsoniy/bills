@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Domain\Bill\Model;
 
 use App\Domain\Money\Money;
-use App\Domain\Participant\ParticipantId;
+use App\Domain\Money\MoneyBreakdown;
 
 class Bill
 {
@@ -16,10 +16,43 @@ class Bill
     /** @var BillItem[] */
     private array $items;
 
-    /**
-     * Index by @see ParticipantId.
-     *
-     * @var Money[]
-     */
-    private array $deposits;
+    private MoneyBreakdown $deposit;
+
+    public function addItem(BillItem $item): void
+    {
+        $this->items[] = $item;
+    }
+
+    public function calculateTotal(): Money
+    {
+        $total = new Money();
+        foreach ($this->items as $item) {
+            $total = $total->add($item->getCost());
+        }
+
+        return $total;
+    }
+
+    public function calculateTotalBreakdown(): MoneyBreakdown
+    {
+        $total = $this->calculateTotal();
+        $totalBreakdown = $this->mergeItemBreakdowns();
+        // TODO correct rounding errors
+        return $totalBreakdown;
+    }
+
+    private function mergeItemBreakdowns(): MoneyBreakdown
+    {
+        $totalBreakdown = new MoneyBreakdown();
+        foreach ($this->items as $item) {
+            $itemBreakdown = $item->calculateBreakdown();
+            $totalBreakdown = $totalBreakdown->merge($itemBreakdown);
+        }
+
+        return $totalBreakdown;
+    }
+
+    private function round()
+    {
+    }
 }
