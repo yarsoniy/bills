@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Controller;
 
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -7,9 +9,9 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class BillController
 {
-    #[Route("/api/test")]
+    #[Route('/api/test')]
     public function test()
     {
-        return new JsonResponse(["success" => true, "test" => 'ololo']);
+        return new JsonResponse(['success' => true, 'test' => 'ololo']);
     }
 }

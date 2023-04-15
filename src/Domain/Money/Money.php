@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Money;
 
 readonly class Money
@@ -11,18 +13,17 @@ readonly class Money
         $this->value = $value;
     }
 
-    public function add(Money $money): Money
+    public function add(self $money): self
     {
         return new self($this->value + $money->value);
     }
 
-    public function sub(Money $money): Money
+    public function sub(self $money): self
     {
         return new self($this->value - $money->value);
     }
 
     /**
-     * @param int $parts
      * @return Money[]
      */
     public function split(int $parts): array
@@ -30,7 +31,7 @@ readonly class Money
         $splitValue = $this->value / $parts;
 
         $result = [];
-        for ($i = 0; $i < $parts; $i++) {
+        for ($i = 0; $i < $parts; ++$i) {
             $result[] = new self($splitValue);
         }
 

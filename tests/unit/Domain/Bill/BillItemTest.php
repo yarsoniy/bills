@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Tests\unit\Domain\Bill;
 
 use App\Domain\Bill\Model\BillItem;
@@ -22,7 +24,6 @@ class BillItemTest extends Unit
         $billItem->addPaymentDirection($pB, $pB);
         $billItem->addPaymentDirection($pC, $pC);
         $billItem->addPaymentDirection($pD, $pD);
-
 
         $expected = [
             'participant-A' => new Money(100),
@@ -52,7 +53,6 @@ class BillItemTest extends Unit
         $billItem->addPaymentDirection($pB, $pD);
         $billItem->addPaymentDirection($pC, $pD);
 
-
         $expected = [
             'participant-A' => new Money(100),
             'participant-B' => new Money(100),
@@ -78,7 +78,6 @@ class BillItemTest extends Unit
         $billItem->addPaymentDirection($pA, $pD);
         $billItem->addPaymentDirection($pB, $pD);
         $billItem->addPaymentDirection($pC, $pD);
-
 
         $expected = [
             'participant-A' => new Money(33.33),

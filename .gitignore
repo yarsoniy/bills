@@ -7,10 +7,15 @@
 /public/bundles/
 /var/
 /vendor/
-/tools/php-cs-fixer/vendor/
 ###< symfony/framework-bundle ###
 
 ###> phpunit/phpunit ###
 /phpunit.xml
 .phpunit.result.cache
 ###< phpunit/phpunit ###
+
+###> php-cs-fixer ###
+/tools/php-cs-fixer/vendor/
+.php-cs-fixer.php
+.php-cs-fixer.cache
+###< php-cs-fixer ###

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Tests\unit\Domain\Money;
 
 use App\Domain\Money\Money;
@@ -49,5 +51,4 @@ class MoneyTest extends Unit
         $this->expectException(\DivisionByZeroError::class);
         $a->split(0);
     }
-
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Bill\Model;
 
 use App\Domain\Money\Money;
@@ -15,11 +17,9 @@ class Bill
     private array $items;
 
     /**
-     * Index by @see ParticipantId
+     * Index by @see ParticipantId.
+     *
      * @var Money[]
      */
     private array $deposits;
-
-
-
 }

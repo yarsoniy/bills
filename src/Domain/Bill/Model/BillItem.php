@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain\Bill\Model;
 
 use App\Domain\Money\Money;
@@ -11,7 +13,7 @@ class BillItem
 
     private Money $cost;
 
-    /** @var PaymentDirection[]  */
+    /** @var PaymentDirection[] */
     private array $paymentDirections;
 
     public function __construct(string $title, Money $cost = new Money())
@@ -20,33 +22,21 @@ class BillItem
         $this->cost = $cost;
     }
 
-    /**
-     * @return string
-     */
     public function getTitle(): string
     {
         return $this->title;
     }
 
-    /**
-     * @param string $title
-     */
     public function setTitle(string $title): void
     {
         $this->title = $title;
     }
 
-    /**
-     * @return Money
-     */
     public function getCost(): Money
     {
         return $this->cost;
     }
 
-    /**
-     * @param Money $cost
-     */
     public function setCost(Money $cost): void
     {
         $this->cost = $cost;
@@ -66,7 +56,8 @@ class BillItem
     }
 
     /**
-     * Index by @see ParticipantId
+     * Index by @see ParticipantId.
+     *
      * @return Money[]
      */
     public function calculatePayerShares(): array
@@ -77,11 +68,11 @@ class BillItem
             if (!isset($buyerSplits[$buyerId])) {
                 $buyerSplits[$buyerId] = 0;
             }
-            $buyerSplits[$buyerId]++;
+            ++$buyerSplits[$buyerId];
         }
 
         $uniqueBuyers = array_keys($buyerSplits);
-        $equalShares = $this->cost->split(count($uniqueBuyers));
+        $equalShares = $this->cost->split(\count($uniqueBuyers));
 
         /** @var Money[] $buyerEqualShares */
         $buyerEqualShares = array_combine($uniqueBuyers, $equalShares);
