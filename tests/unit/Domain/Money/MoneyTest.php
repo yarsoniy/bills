@@ -51,4 +51,32 @@ class MoneyTest extends Unit
         $this->expectException(\DivisionByZeroError::class);
         $a->split(0);
     }
+
+    /**
+     * @dataProvider providerRound
+     *
+     * @return void
+     */
+    public function testRound(Money $original, Money $expected)
+    {
+        $this->assertEquals($expected, $original->round());
+    }
+
+    public function providerRound(): array
+    {
+        return [
+            [
+                'original' => new Money(33.333333),
+                'expected' => new Money(33.33),
+            ],
+            [
+                'original' => new Money(66.666666),
+                'expected' => new Money(66.67),
+            ],
+            [
+                'original' => new Money(20.025),
+                'expected' => new Money(20.03),
+            ],
+        ];
+    }
 }

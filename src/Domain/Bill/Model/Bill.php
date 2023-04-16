@@ -14,7 +14,7 @@ class Bill
     private string $title;
 
     /** @var BillItem[] */
-    private array $items;
+    private array $items = [];
 
     private MoneyBreakdown $deposit;
 
@@ -30,15 +30,19 @@ class Bill
             $total = $total->add($item->getCost());
         }
 
-        return $total;
+        return $total->round();
+    }
+
+    public function getCount(): int
+    {
+        return \count($this->items);
     }
 
     public function calculateTotalBreakdown(): MoneyBreakdown
     {
         $total = $this->calculateTotal();
-        $totalBreakdown = $this->mergeItemBreakdowns();
-        // TODO correct rounding errors
-        return $totalBreakdown;
+
+        return $this->mergeItemBreakdowns()->roundWithCorrection($total);
     }
 
     private function mergeItemBreakdowns(): MoneyBreakdown
@@ -50,9 +54,5 @@ class Bill
         }
 
         return $totalBreakdown;
-    }
-
-    private function round()
-    {
     }
 }

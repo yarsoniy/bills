@@ -6,6 +6,8 @@ namespace App\Domain\Money;
 
 readonly class Money
 {
+    private const ROUND_PRECISION = 2;
+
     public float $value;
 
     public function __construct(float $value = 0)
@@ -21,6 +23,11 @@ readonly class Money
     public function sub(self $money): self
     {
         return new self($this->value - $money->value);
+    }
+
+    public function round(): self
+    {
+        return new self(round($this->value, self::ROUND_PRECISION));
     }
 
     /**

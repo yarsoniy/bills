@@ -58,15 +58,29 @@ class BillTest extends Unit
 
         $expected = new MoneyBreakdown(
             [
-                'participant-A' => new Money(333.33),
+                'participant-A' => new Money(333.34),
                 'participant-B' => new Money(433.33),
                 'participant-C' => new Money(533.33),
                 'participant-D' => new Money(100),
             ]
         );
-        $actual = $bill->calculateTotalBreakdown();
 
-        $this->assertEqualsWithDelta($expected, $actual, 0.01);
+        $actual = $bill->calculateTotalBreakdown();
+        $this->assertEquals($bill->calculateTotal(), $actual->sum());
+
+        $this->assertEquals($expected, $actual);
+    }
+
+    public function testAddItem()
+    {
+        $bill = new Bill();
+        $this->assertEquals(0, $bill->getCount());
+
+        $bill->addItem(new BillItem('item-1', new Money(100.12)));
+        $this->assertEquals(1, $bill->getCount());
+
+        $bill->addItem(new BillItem('item-2', new Money(200.15)));
+        $this->assertEquals(2, $bill->getCount());
     }
 
     public function testCalculateTotal()
