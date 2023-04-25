@@ -6,6 +6,6 @@ namespace App\Domain\AccountingBook;
 
 enum AccountingRecordType: string
 {
-    case BORROW = 'borrow';
+    case LEND = 'lend';
     case PAY_BACK = 'pay_back';
 }
