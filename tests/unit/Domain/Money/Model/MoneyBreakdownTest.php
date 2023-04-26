@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace App\Tests\unit\Domain\Money;
+namespace App\Tests\unit\Domain\Money\Model;
 
-use App\Domain\Money\Money;
-use App\Domain\Money\MoneyBreakdown;
+use App\Domain\Money\Model\Money;
+use App\Domain\Money\Model\MoneyBreakdown;
 use Codeception\Test\Unit;
 
 class MoneyBreakdownTest extends Unit

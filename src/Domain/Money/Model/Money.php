@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Domain\Money;
+namespace App\Domain\Money\Model;
 
 readonly class Money
 {
@@ -23,6 +23,16 @@ readonly class Money
     public function sub(self $money): self
     {
         return new self($this->value - $money->value);
+    }
+
+    public function negative(): self
+    {
+        return new self($this->value * -1);
+    }
+
+    public function abs(): self
+    {
+        return new self(abs($this->value));
     }
 
     public function round(): self

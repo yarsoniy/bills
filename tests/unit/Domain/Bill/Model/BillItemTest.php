@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace App\Tests\unit\Domain\Bill;
+namespace App\Tests\unit\Domain\Bill\Model;
 
 use App\Domain\Bill\Model\BillItem;
-use App\Domain\Money\Money;
-use App\Domain\Money\MoneyBreakdown;
+use App\Domain\Money\Model\Money;
+use App\Domain\Money\Model\MoneyBreakdown;
 use App\Domain\Participant\ParticipantId;
 use Codeception\Test\Unit;
 

@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace App\Domain\Bill\Model;
 
-use App\Domain\Money\Money;
-use App\Domain\Money\MoneyBreakdown;
+use App\Domain\AccountingBook\Model\Operation;
+use App\Domain\DebtResolver\Service\DebtResolver;
+use App\Domain\Money\Model\Money;
+use App\Domain\Money\Model\MoneyBreakdown;
 
 class Bill
 {
@@ -54,5 +56,28 @@ class Bill
         }
 
         return $totalBreakdown;
+    }
+
+    private function calculateBalance(): MoneyBreakdown
+    {
+        $totalCostBreakdown = $this->calculateTotalBreakdown();
+        $deposit = $this->deposit;
+        $allKeys = array_unique(array_merge($deposit->keys(), $totalCostBreakdown->keys()));
+
+        $balance = new MoneyBreakdown();
+        foreach ($allKeys as $key) {
+            $participantBalance = $deposit->get($key)->sub($totalCostBreakdown->get($key));
+            $balance = $balance->add($key, $participantBalance);
+        }
+
+        return $balance->round();
+    }
+
+    /**
+     * @return Operation[]
+     */
+    public function suggestSettleUp(DebtResolver $resolver): array
+    {
+        return $resolver->resolve($this->calculateBalance());
     }
 }

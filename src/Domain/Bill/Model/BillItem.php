@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Domain\Bill\Model;
 
-use App\Domain\Money\Money;
-use App\Domain\Money\MoneyBreakdown;
+use App\Domain\Money\Model\Money;
+use App\Domain\Money\Model\MoneyBreakdown;
 use App\Domain\Participant\ParticipantId;
 
 class BillItem

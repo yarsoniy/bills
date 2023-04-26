@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Domain\Money;
+namespace App\Domain\Money\Model;
 
 readonly class MoneyBreakdown
 {
