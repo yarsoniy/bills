@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Tests\unit\Domain\Money\Model;
 
 use App\Domain\Money\Model\Money;
+use App\Domain\Money\Model\MoneyBreakdown;
 use Codeception\Test\Unit;
 
 class MoneyTest extends Unit
@@ -31,6 +32,22 @@ class MoneyTest extends Unit
         $this->assertEquals($expected, $actual);
     }
 
+    public function testNegative()
+    {
+        $original = new Money(43.76);
+
+        $negative = $original->negative();
+        $this->assertEquals($negative, new Money(-43.76));
+        $this->assertEquals($negative->negative(), new Money(43.76));
+    }
+
+    public function testAbs()
+    {
+        $original = new Money(-43.76);
+        $this->assertEquals($original->abs(), new Money(43.76));
+        $this->assertEquals($original->abs()->abs(), new Money(43.76));
+    }
+
     public function testSplitBy3()
     {
         $a = new Money(1000);
@@ -50,6 +67,22 @@ class MoneyTest extends Unit
         $a = new Money(1000);
         $this->expectException(\DivisionByZeroError::class);
         $a->split(0);
+    }
+
+    public function testSplitByKey()
+    {
+        $a = new Money(1000);
+
+        $expected = new MoneyBreakdown(
+            [
+                'key1' => new Money(333.33333),
+                'key2' => new Money(333.33333),
+                'key3' => new Money(333.33333),
+            ]
+        );
+        $actual = $a->splitByKey(['key1', 'key2', 'key3']);
+
+        $this->assertEqualsWithDelta($expected, $actual, 0.00001);
     }
 
     /**

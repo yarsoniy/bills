@@ -15,6 +15,13 @@ class Record
     /** @var Operation[] */
     private array $operations;
 
+    public function __construct(string $title, \DateTimeImmutable $createdAt, array $operations)
+    {
+        $this->title = $title;
+        $this->createdAt = $createdAt;
+        $this->operations = $operations;
+    }
+
     public function calculateBalance(): MoneyBreakdown
     {
         $balance = new MoneyBreakdown();
