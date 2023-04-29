@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Domain\Bill\Model;
 
-use App\Domain\Participant\Model\ParticipantId;
+use App\Domain\ParticipantGroup\Model\ParticipantId;
 
 /**
  * Represents that the participant should pay some part for himself or for another participant.

@@ -6,7 +6,7 @@ namespace App\Domain\Bill\Model;
 
 use App\Domain\Money\Model\Money;
 use App\Domain\Money\Model\MoneyBreakdown;
-use App\Domain\Participant\Model\ParticipantId;
+use App\Domain\ParticipantGroup\Model\ParticipantId;
 
 class BillItem
 {

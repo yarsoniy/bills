@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Domain\Bill\Model;
 
 use App\Domain\AccountingBook\Model\Transaction;
+use App\Domain\Bill\View\BillItemView;
 use App\Domain\DebtResolver\Service\DebtResolver;
 use App\Domain\Money\Model\Money;
 use App\Domain\Money\Model\MoneyBreakdown;
@@ -23,6 +24,14 @@ class Bill
     public function addItem(BillItem $item): void
     {
         $this->items[] = $item;
+    }
+
+    /**
+     * @return BillItem[]
+     */
+    public function getItems(): array
+    {
+        return array_map(fn (BillItem $i) => new BillItemView($i), $this->items);
     }
 
     public function calculateTotal(): Money

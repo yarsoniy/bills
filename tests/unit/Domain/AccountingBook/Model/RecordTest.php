@@ -9,7 +9,7 @@ use App\Domain\AccountingBook\Model\RecordType;
 use App\Domain\AccountingBook\Model\Transaction;
 use App\Domain\Money\Model\Money;
 use App\Domain\Money\Model\MoneyBreakdown;
-use App\Domain\Participant\Model\ParticipantId;
+use App\Domain\ParticipantGroup\Model\ParticipantId;
 use Codeception\Test\Unit;
 
 class RecordTest extends Unit

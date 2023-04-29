@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Domain\Participant\Model;
+namespace App\Domain\ParticipantGroup\Model;
 
 readonly class ParticipantId
 {
