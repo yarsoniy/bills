@@ -34,7 +34,7 @@ class AccountingBook
     }
 
     /**
-     * @return Operation[]
+     * @return Transaction[]
      */
     public function suggestSettleUp(DebtResolver $resolver): array
     {

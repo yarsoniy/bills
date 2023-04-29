@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Domain\AccountingBook\Model;
 
-enum OperationType: string
+enum RecordType: string
 {
     case LEND = 'lend';
     case PAY_BACK = 'pay_back';

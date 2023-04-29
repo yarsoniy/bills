@@ -4,8 +4,7 @@ declare(strict_types=1);
 
 namespace App\Tests\unit\Domain\DebtResolver\Service;
 
-use App\Domain\AccountingBook\Model\Operation;
-use App\Domain\AccountingBook\Model\OperationType;
+use App\Domain\AccountingBook\Model\Transaction;
 use App\Domain\DebtResolver\Service\DebtResolver;
 use App\Domain\Money\Model\Money;
 use App\Domain\Money\Model\MoneyBreakdown;
@@ -17,7 +16,7 @@ class DebtResolverTest extends Unit
     /**
      * @dataProvider providerResolve
      *
-     * @param Operation[] $expected
+     * @param Transaction[] $expected
      */
     public function testResolve(MoneyBreakdown $balance, array $expected): void
     {
@@ -40,9 +39,9 @@ class DebtResolverTest extends Unit
                     ]
                 ),
                 'expected' => [
-                    new Operation(OperationType::PAY_BACK, new ParticipantId('pD'), new ParticipantId('pB'), new Money(50)),
-                    new Operation(OperationType::PAY_BACK, new ParticipantId('pD'), new ParticipantId('pA'), new Money(40)),
-                    new Operation(OperationType::PAY_BACK, new ParticipantId('pC'), new ParticipantId('pA'), new Money(60)),
+                    new Transaction(new ParticipantId('pD'), new ParticipantId('pB'), new Money(50)),
+                    new Transaction(new ParticipantId('pD'), new ParticipantId('pA'), new Money(40)),
+                    new Transaction(new ParticipantId('pC'), new ParticipantId('pA'), new Money(60)),
                 ],
             ],
         ];

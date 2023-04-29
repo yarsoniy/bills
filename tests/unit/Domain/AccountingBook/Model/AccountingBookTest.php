@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace App\Tests\unit\Domain\AccountingBook\Model;
 
 use App\Domain\AccountingBook\Model\AccountingBook;
-use App\Domain\AccountingBook\Model\Operation;
-use App\Domain\AccountingBook\Model\OperationType;
 use App\Domain\AccountingBook\Model\Record;
+use App\Domain\AccountingBook\Model\RecordType;
+use App\Domain\AccountingBook\Model\Transaction;
 use App\Domain\Money\Model\Money;
 use App\Domain\Money\Model\MoneyBreakdown;
 use App\Domain\Participant\ParticipantId;
@@ -37,10 +37,10 @@ class AccountingBookTest extends Unit
         return [
             [
                 'records' => [
-                    new Record('Lend for party', new \DateTimeImmutable(), [
-                        new Operation(OperationType::LEND, new ParticipantId('pA'), new ParticipantId('pB'), new Money(200)),
-                        new Operation(OperationType::LEND, new ParticipantId('pA'), new ParticipantId('pC'), new Money(100)),
-                        new Operation(OperationType::LEND, new ParticipantId('pA'), new ParticipantId('pD'), new Money(50)),
+                    new Record(RecordType::LEND, 'Lend for party', new \DateTimeImmutable(), [
+                        new Transaction(new ParticipantId('pA'), new ParticipantId('pB'), new Money(200)),
+                        new Transaction(new ParticipantId('pA'), new ParticipantId('pC'), new Money(100)),
+                        new Transaction(new ParticipantId('pA'), new ParticipantId('pD'), new Money(50)),
                     ]),
                 ],
                 'expected' => new MoneyBreakdown(
@@ -54,15 +54,15 @@ class AccountingBookTest extends Unit
             ],
             [
                 'records' => [
-                    new Record('Lend for party', new \DateTimeImmutable(), [
-                        new Operation(OperationType::LEND, new ParticipantId('pA'), new ParticipantId('pB'), new Money(200)),
-                        new Operation(OperationType::LEND, new ParticipantId('pA'), new ParticipantId('pC'), new Money(100)),
-                        new Operation(OperationType::LEND, new ParticipantId('pA'), new ParticipantId('pD'), new Money(50)),
+                    new Record(RecordType::LEND, 'Lend for party', new \DateTimeImmutable(), [
+                        new Transaction(new ParticipantId('pA'), new ParticipantId('pB'), new Money(200)),
+                        new Transaction(new ParticipantId('pA'), new ParticipantId('pC'), new Money(100)),
+                        new Transaction(new ParticipantId('pA'), new ParticipantId('pD'), new Money(50)),
                     ]),
-                    new Record('Lend for party', new \DateTimeImmutable(), [
-                        new Operation(OperationType::PAY_BACK, new ParticipantId('pB'), new ParticipantId('pA'), new Money(120)),
-                        new Operation(OperationType::PAY_BACK, new ParticipantId('pC'), new ParticipantId('pA'), new Money(70)),
-                        new Operation(OperationType::PAY_BACK, new ParticipantId('pD'), new ParticipantId('pA'), new Money(30)),
+                    new Record(RecordType::PAY_BACK, 'Pay back for party', new \DateTimeImmutable(), [
+                        new Transaction(new ParticipantId('pB'), new ParticipantId('pA'), new Money(120)),
+                        new Transaction(new ParticipantId('pC'), new ParticipantId('pA'), new Money(70)),
+                        new Transaction(new ParticipantId('pD'), new ParticipantId('pA'), new Money(30)),
                     ]),
                 ],
                 'expected' => new MoneyBreakdown(
@@ -76,20 +76,20 @@ class AccountingBookTest extends Unit
             ],
             [
                 'records' => [
-                    new Record('Lend for party', new \DateTimeImmutable(), [
-                        new Operation(OperationType::LEND, new ParticipantId('pA'), new ParticipantId('pB'), new Money(200)),
-                        new Operation(OperationType::LEND, new ParticipantId('pA'), new ParticipantId('pC'), new Money(100)),
-                        new Operation(OperationType::LEND, new ParticipantId('pA'), new ParticipantId('pD'), new Money(50)),
+                    new Record(RecordType::LEND, 'Lend for party', new \DateTimeImmutable(), [
+                        new Transaction(new ParticipantId('pA'), new ParticipantId('pB'), new Money(200)),
+                        new Transaction(new ParticipantId('pA'), new ParticipantId('pC'), new Money(100)),
+                        new Transaction(new ParticipantId('pA'), new ParticipantId('pD'), new Money(50)),
                     ]),
-                    new Record('Pay back for party', new \DateTimeImmutable(), [
-                        new Operation(OperationType::PAY_BACK, new ParticipantId('pB'), new ParticipantId('pA'), new Money(120)),
-                        new Operation(OperationType::PAY_BACK, new ParticipantId('pC'), new ParticipantId('pA'), new Money(70)),
-                        new Operation(OperationType::PAY_BACK, new ParticipantId('pD'), new ParticipantId('pA'), new Money(30)),
+                    new Record(RecordType::PAY_BACK, 'Pay back for party', new \DateTimeImmutable(), [
+                        new Transaction(new ParticipantId('pB'), new ParticipantId('pA'), new Money(120)),
+                        new Transaction(new ParticipantId('pC'), new ParticipantId('pA'), new Money(70)),
+                        new Transaction(new ParticipantId('pD'), new ParticipantId('pA'), new Money(30)),
                     ]),
-                    new Record('pA cancels all debts of other participants', new \DateTimeImmutable(), [
-                        new Operation(OperationType::DEBT_CANCELLATION, new ParticipantId('pA'), new ParticipantId('pB'), new Money(80)),
-                        new Operation(OperationType::DEBT_CANCELLATION, new ParticipantId('pA'), new ParticipantId('pC'), new Money(30)),
-                        new Operation(OperationType::DEBT_CANCELLATION, new ParticipantId('pA'), new ParticipantId('pD'), new Money(20)),
+                    new Record(RecordType::DEBT_CANCELLATION, 'pA cancels all debts of other participants', new \DateTimeImmutable(), [
+                        new Transaction(new ParticipantId('pA'), new ParticipantId('pB'), new Money(80)),
+                        new Transaction(new ParticipantId('pA'), new ParticipantId('pC'), new Money(30)),
+                        new Transaction(new ParticipantId('pA'), new ParticipantId('pD'), new Money(20)),
                     ]),
                 ],
                 'expected' => new MoneyBreakdown(

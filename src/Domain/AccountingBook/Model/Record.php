@@ -8,38 +8,41 @@ use App\Domain\Money\Model\MoneyBreakdown;
 
 class Record
 {
+    private RecordType $type;
+
     private string $title;
 
     private \DateTimeImmutable $createdAt;
 
-    /** @var Operation[] */
-    private array $operations;
+    /** @var Transaction[] */
+    private array $transactions;
 
-    public function __construct(string $title, \DateTimeImmutable $createdAt, array $operations)
+    public function __construct(RecordType $type, string $title, \DateTimeImmutable $createdAt, array $operations)
     {
+        $this->type = $type;
         $this->title = $title;
         $this->createdAt = $createdAt;
-        $this->operations = $operations;
+        $this->transactions = $operations;
     }
 
     public function calculateBalance(): MoneyBreakdown
     {
         $balance = new MoneyBreakdown();
-        foreach ($this->operations as $o) {
-            if (\in_array($o->type, [OperationType::LEND, OperationType::PAY_BACK], true)) {
+        foreach ($this->transactions as $tx) {
+            if (\in_array($this->type, [RecordType::LEND, RecordType::PAY_BACK], true)) {
                 $balance = $balance
-                    ->add($o->a->id, $o->amount)
-                    ->add($o->b->id, $o->amount->negative());
+                    ->add($tx->a->id, $tx->amount)
+                    ->add($tx->b->id, $tx->amount->negative());
                 continue;
             }
-            if (\in_array($o->type, [OperationType::DEBT_CANCELLATION], true)) {
+            if (\in_array($this->type, [RecordType::DEBT_CANCELLATION], true)) {
                 $balance = $balance
-                    ->add($o->a->id, $o->amount->negative())
-                    ->add($o->b->id, $o->amount);
+                    ->add($tx->a->id, $tx->amount->negative())
+                    ->add($tx->b->id, $tx->amount);
                 continue;
             }
 
-            throw new \Error('Unknown operation type '.$o->type);
+            throw new \Error('Unsupported operation type '.$this->type);
         }
 
         return $balance;

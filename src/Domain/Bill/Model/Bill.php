@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Domain\Bill\Model;
 
-use App\Domain\AccountingBook\Model\Operation;
+use App\Domain\AccountingBook\Model\Transaction;
 use App\Domain\DebtResolver\Service\DebtResolver;
 use App\Domain\Money\Model\Money;
 use App\Domain\Money\Model\MoneyBreakdown;
@@ -74,7 +74,7 @@ class Bill
     }
 
     /**
-     * @return Operation[]
+     * @return Transaction[]
      */
     public function suggestSettleUp(DebtResolver $resolver): array
     {

@@ -4,8 +4,7 @@ declare(strict_types=1);
 
 namespace App\Domain\DebtResolver\Service;
 
-use App\Domain\AccountingBook\Model\Operation;
-use App\Domain\AccountingBook\Model\OperationType;
+use App\Domain\AccountingBook\Model\Transaction;
 use App\Domain\Money\Model\Money;
 use App\Domain\Money\Model\MoneyBreakdown;
 use App\Domain\Participant\ParticipantId;
@@ -13,7 +12,7 @@ use App\Domain\Participant\ParticipantId;
 class DebtResolver
 {
     /**
-     * @return Operation[]
+     * @return Transaction[]
      */
     public function resolve(MoneyBreakdown $balance): array
     {
@@ -29,7 +28,7 @@ class DebtResolver
         uasort($positiveItems, fn (Money $a, Money $b) => $a->value <=> $b->value);
         uasort($negativeItems, fn (Money $a, Money $b) => $a->value <=> $b->value);
 
-        $operations = [];
+        $transactions = [];
         foreach ($negativeItems as $negativeKey => $negativeItem) {
             foreach ($positiveItems as $positiveKey => $positiveItem) {
                 if (0 == $positiveItem->value) {
@@ -41,8 +40,7 @@ class DebtResolver
                     $amount = $positiveItem;
                 }
 
-                $operations[] = new Operation(
-                    OperationType::PAY_BACK,
+                $transactions[] = new Transaction(
                     new ParticipantId($negativeKey),
                     new ParticipantId($positiveKey),
                     $amount
@@ -57,6 +55,6 @@ class DebtResolver
             }
         }
 
-        return $operations;
+        return $transactions;
     }
 }
