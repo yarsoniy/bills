@@ -22,33 +22,33 @@ class BillTest extends Unit
 
         // all pay equally
         $item1 = new BillItem('beer', new Money(400));
-        $item1->addPaymentDirection($pA, $pA);
-        $item1->addPaymentDirection($pB, $pB);
-        $item1->addPaymentDirection($pC, $pC);
-        $item1->addPaymentDirection($pD, $pD);
+        $item1->addPayment($pA, $pA);
+        $item1->addPayment($pB, $pB);
+        $item1->addPayment($pC, $pC);
+        $item1->addPayment($pD, $pD);
 
         // all pay for D
         $item2 = new BillItem('pizza', new Money(300));
-        $item2->addPaymentDirection($pA, $pA);
-        $item2->addPaymentDirection($pB, $pB);
-        $item2->addPaymentDirection($pC, $pC);
-        $item2->addPaymentDirection($pA, $pD);
-        $item2->addPaymentDirection($pB, $pD);
-        $item2->addPaymentDirection($pC, $pD);
+        $item2->addPayment($pA, $pA);
+        $item2->addPayment($pB, $pB);
+        $item2->addPayment($pC, $pC);
+        $item2->addPayment($pA, $pD);
+        $item2->addPayment($pB, $pD);
+        $item2->addPayment($pC, $pD);
 
         // A doesn't buy, all pay for D
         $item3 = new BillItem('salad', new Money(300));
-        $item3->addPaymentDirection($pB, $pB);
-        $item3->addPaymentDirection($pC, $pC);
-        $item3->addPaymentDirection($pA, $pD);
-        $item3->addPaymentDirection($pB, $pD);
-        $item3->addPaymentDirection($pC, $pD);
+        $item3->addPayment($pB, $pB);
+        $item3->addPayment($pC, $pC);
+        $item3->addPayment($pA, $pD);
+        $item3->addPayment($pB, $pD);
+        $item3->addPayment($pC, $pD);
 
         $item4 = new BillItem('meat', new Money(400));
-        $item4->addPaymentDirection($pA, $pA);
-        $item4->addPaymentDirection($pB, $pB);
-        $item4->addPaymentDirection($pC, $pC);
-        $item4->addPaymentDirection($pC, $pD);
+        $item4->addPayment($pA, $pA);
+        $item4->addPayment($pB, $pB);
+        $item4->addPayment($pC, $pC);
+        $item4->addPayment($pC, $pD);
 
         $bill = new Bill();
         $bill->addItem($item1);

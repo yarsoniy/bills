@@ -21,10 +21,10 @@ class BillItemTest extends Unit
         $pB = new ParticipantId('participant-B');
         $pC = new ParticipantId('participant-C');
         $pD = new ParticipantId('participant-D');
-        $billItem->addPaymentDirection($pA, $pA);
-        $billItem->addPaymentDirection($pB, $pB);
-        $billItem->addPaymentDirection($pC, $pC);
-        $billItem->addPaymentDirection($pD, $pD);
+        $billItem->addPayment($pA, $pA);
+        $billItem->addPayment($pB, $pB);
+        $billItem->addPayment($pC, $pC);
+        $billItem->addPayment($pD, $pD);
 
         $expected = new MoneyBreakdown(
             [
@@ -49,12 +49,12 @@ class BillItemTest extends Unit
         $pC = new ParticipantId('participant-C');
         $pD = new ParticipantId('participant-D');
 
-        $billItem->addPaymentDirection($pA, $pA);
-        $billItem->addPaymentDirection($pB, $pB);
-        $billItem->addPaymentDirection($pC, $pC);
-        $billItem->addPaymentDirection($pA, $pD);
-        $billItem->addPaymentDirection($pB, $pD);
-        $billItem->addPaymentDirection($pC, $pD);
+        $billItem->addPayment($pA, $pA);
+        $billItem->addPayment($pB, $pB);
+        $billItem->addPayment($pC, $pC);
+        $billItem->addPayment($pA, $pD);
+        $billItem->addPayment($pB, $pD);
+        $billItem->addPayment($pC, $pD);
 
         $expected = new MoneyBreakdown(
             [
@@ -78,11 +78,11 @@ class BillItemTest extends Unit
         $pC = new ParticipantId('participant-C');
         $pD = new ParticipantId('participant-D');
 
-        $billItem->addPaymentDirection($pB, $pB);
-        $billItem->addPaymentDirection($pC, $pC);
-        $billItem->addPaymentDirection($pA, $pD);
-        $billItem->addPaymentDirection($pB, $pD);
-        $billItem->addPaymentDirection($pC, $pD);
+        $billItem->addPayment($pB, $pB);
+        $billItem->addPayment($pC, $pC);
+        $billItem->addPayment($pA, $pD);
+        $billItem->addPayment($pB, $pD);
+        $billItem->addPayment($pC, $pD);
 
         $expected = new MoneyBreakdown(
             [
@@ -106,10 +106,10 @@ class BillItemTest extends Unit
         $pC = new ParticipantId('participant-C');
         $pD = new ParticipantId('participant-D');
 
-        $billItem->addPaymentDirection($pA, $pA);
-        $billItem->addPaymentDirection($pB, $pB);
-        $billItem->addPaymentDirection($pC, $pC);
-        $billItem->addPaymentDirection($pC, $pD);
+        $billItem->addPayment($pA, $pA);
+        $billItem->addPayment($pB, $pB);
+        $billItem->addPayment($pC, $pC);
+        $billItem->addPayment($pC, $pD);
 
         $expected = new MoneyBreakdown(
             [
