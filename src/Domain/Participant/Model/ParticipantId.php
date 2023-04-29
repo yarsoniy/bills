@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Domain\Bill\Model;
+namespace App\Domain\Participant\Model;
 
-readonly class BillId
+readonly class ParticipantId
 {
     public string $id;
 

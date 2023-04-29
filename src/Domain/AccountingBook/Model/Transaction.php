@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Domain\AccountingBook\Model;
 
 use App\Domain\Money\Model\Money;
-use App\Domain\Participant\ParticipantId;
+use App\Domain\Participant\Model\ParticipantId;
 
 readonly class Transaction
 {

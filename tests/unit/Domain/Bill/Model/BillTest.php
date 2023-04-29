@@ -8,7 +8,7 @@ use App\Domain\Bill\Model\Bill;
 use App\Domain\Bill\Model\BillItem;
 use App\Domain\Money\Model\Money;
 use App\Domain\Money\Model\MoneyBreakdown;
-use App\Domain\Participant\ParticipantId;
+use App\Domain\Participant\Model\ParticipantId;
 use Codeception\Test\Unit;
 
 class BillTest extends Unit

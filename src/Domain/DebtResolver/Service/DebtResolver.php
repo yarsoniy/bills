@@ -7,7 +7,7 @@ namespace App\Domain\DebtResolver\Service;
 use App\Domain\AccountingBook\Model\Transaction;
 use App\Domain\Money\Model\Money;
 use App\Domain\Money\Model\MoneyBreakdown;
-use App\Domain\Participant\ParticipantId;
+use App\Domain\Participant\Model\ParticipantId;
 
 class DebtResolver
 {
