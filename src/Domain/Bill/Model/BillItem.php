@@ -10,6 +10,8 @@ use App\Domain\ParticipantGroup\Model\ParticipantId;
 
 class BillItem
 {
+    private BillItemId $id;
+
     private string $title;
 
     private Money $cost;
@@ -21,6 +23,11 @@ class BillItem
     {
         $this->title = $title;
         $this->cost = $cost;
+    }
+
+    public function getId(): BillItemId
+    {
+        return $this->id;
     }
 
     public function getTitle(): string

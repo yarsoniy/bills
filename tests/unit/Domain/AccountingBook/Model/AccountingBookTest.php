@@ -4,28 +4,30 @@ declare(strict_types=1);
 
 namespace App\Tests\unit\Domain\AccountingBook\Model;
 
-use App\Domain\AccountingBook\Model\AccountingBook;
-use App\Domain\AccountingBook\Model\Record;
 use App\Domain\AccountingBook\Model\RecordType;
-use App\Domain\AccountingBook\Model\Transaction;
 use App\Domain\Money\Model\Money;
 use App\Domain\Money\Model\MoneyBreakdown;
-use App\Domain\ParticipantGroup\Model\ParticipantId;
+use App\Tests\UnitTester;
 use Codeception\Test\Unit;
 
 class AccountingBookTest extends Unit
 {
+    protected UnitTester $tester;
+
     /**
      * @dataProvider providerCalculateBalance
      *
-     * @param Record[] $records
+     * @param array[] $records
      *
      * @return void
      */
     public function testCalculateBalance(array $records, MoneyBreakdown $expected)
     {
-        $book = new AccountingBook();
-        foreach ($records as $record) {
+        $book = $this->tester->createAccountingBook();
+        foreach ($records as $recordData) {
+            $type = $recordData['type'];
+            $transactions = array_map(fn (array $item) => $this->tester->createTransaction(...$item), $recordData['transactions']);
+            $record = $this->tester->createRecord(['type' => $type, 'transactions' => $transactions]);
             $book->addRecord($record);
         }
 
@@ -37,11 +39,14 @@ class AccountingBookTest extends Unit
         return [
             [
                 'records' => [
-                    new Record(RecordType::LEND, 'Lend for party', new \DateTimeImmutable(), [
-                        new Transaction(new ParticipantId('pA'), new ParticipantId('pB'), new Money(200)),
-                        new Transaction(new ParticipantId('pA'), new ParticipantId('pC'), new Money(100)),
-                        new Transaction(new ParticipantId('pA'), new ParticipantId('pD'), new Money(50)),
-                    ]),
+                    [
+                        'type' => RecordType::LEND,
+                        'transactions' => [
+                            ['pA', 'pB', 200],
+                            ['pA', 'pC', 100],
+                            ['pA', 'pD', 50],
+                        ],
+                    ],
                 ],
                 'expected' => new MoneyBreakdown(
                     [
@@ -54,16 +59,22 @@ class AccountingBookTest extends Unit
             ],
             [
                 'records' => [
-                    new Record(RecordType::LEND, 'Lend for party', new \DateTimeImmutable(), [
-                        new Transaction(new ParticipantId('pA'), new ParticipantId('pB'), new Money(200)),
-                        new Transaction(new ParticipantId('pA'), new ParticipantId('pC'), new Money(100)),
-                        new Transaction(new ParticipantId('pA'), new ParticipantId('pD'), new Money(50)),
-                    ]),
-                    new Record(RecordType::PAY_BACK, 'Pay back for party', new \DateTimeImmutable(), [
-                        new Transaction(new ParticipantId('pB'), new ParticipantId('pA'), new Money(120)),
-                        new Transaction(new ParticipantId('pC'), new ParticipantId('pA'), new Money(70)),
-                        new Transaction(new ParticipantId('pD'), new ParticipantId('pA'), new Money(30)),
-                    ]),
+                    [
+                        'type' => RecordType::LEND,
+                        'transactions' => [
+                            ['pA', 'pB', 200],
+                            ['pA', 'pC', 100],
+                            ['pA', 'pD', 50],
+                        ],
+                    ],
+                    [
+                        'type' => RecordType::PAY_BACK,
+                        'transactions' => [
+                            ['pB', 'pA', 120],
+                            ['pC', 'pA', 70],
+                            ['pD', 'pA', 30],
+                        ],
+                    ],
                 ],
                 'expected' => new MoneyBreakdown(
                     [
@@ -76,21 +87,30 @@ class AccountingBookTest extends Unit
             ],
             [
                 'records' => [
-                    new Record(RecordType::LEND, 'Lend for party', new \DateTimeImmutable(), [
-                        new Transaction(new ParticipantId('pA'), new ParticipantId('pB'), new Money(200)),
-                        new Transaction(new ParticipantId('pA'), new ParticipantId('pC'), new Money(100)),
-                        new Transaction(new ParticipantId('pA'), new ParticipantId('pD'), new Money(50)),
-                    ]),
-                    new Record(RecordType::PAY_BACK, 'Pay back for party', new \DateTimeImmutable(), [
-                        new Transaction(new ParticipantId('pB'), new ParticipantId('pA'), new Money(120)),
-                        new Transaction(new ParticipantId('pC'), new ParticipantId('pA'), new Money(70)),
-                        new Transaction(new ParticipantId('pD'), new ParticipantId('pA'), new Money(30)),
-                    ]),
-                    new Record(RecordType::DEBT_CANCELLATION, 'pA cancels all debts of other participants', new \DateTimeImmutable(), [
-                        new Transaction(new ParticipantId('pA'), new ParticipantId('pB'), new Money(80)),
-                        new Transaction(new ParticipantId('pA'), new ParticipantId('pC'), new Money(30)),
-                        new Transaction(new ParticipantId('pA'), new ParticipantId('pD'), new Money(20)),
-                    ]),
+                    [
+                        'type' => RecordType::LEND,
+                        'transactions' => [
+                            ['pA', 'pB', 200],
+                            ['pA', 'pC', 100],
+                            ['pA', 'pD', 50],
+                        ],
+                    ],
+                    [
+                        'type' => RecordType::PAY_BACK,
+                        'transactions' => [
+                            ['pB', 'pA', 120],
+                            ['pC', 'pA', 70],
+                            ['pD', 'pA', 30],
+                        ],
+                    ],
+                    [
+                        'type' => RecordType::DEBT_CANCELLATION,
+                        'transactions' => [
+                            ['pA', 'pB', 80],
+                            ['pA', 'pC', 30],
+                            ['pA', 'pD', 20],
+                        ],
+                    ],
                 ],
                 'expected' => new MoneyBreakdown(
                     [

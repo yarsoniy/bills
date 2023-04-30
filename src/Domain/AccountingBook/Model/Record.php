@@ -17,12 +17,12 @@ class Record
     /** @var Transaction[] */
     private array $transactions;
 
-    public function __construct(RecordType $type, string $title, \DateTimeImmutable $createdAt, array $operations)
+    public function __construct(RecordType $type, string $title, \DateTimeImmutable $createdAt, array $transactions)
     {
         $this->type = $type;
         $this->title = $title;
         $this->createdAt = $createdAt;
-        $this->transactions = $operations;
+        $this->transactions = $transactions;
     }
 
     public function calculateBalance(): MoneyBreakdown

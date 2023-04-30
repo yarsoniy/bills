@@ -4,23 +4,22 @@ declare(strict_types=1);
 
 namespace App\Tests\unit\Domain\AccountingBook\Model;
 
-use App\Domain\AccountingBook\Model\Record;
-use App\Domain\AccountingBook\Model\RecordType;
-use App\Domain\AccountingBook\Model\Transaction;
 use App\Domain\Money\Model\Money;
 use App\Domain\Money\Model\MoneyBreakdown;
-use App\Domain\ParticipantGroup\Model\ParticipantId;
+use App\Tests\UnitTester;
 use Codeception\Test\Unit;
 
 class RecordTest extends Unit
 {
+    protected UnitTester $tester;
+
     public function testCalculateBalanceLend()
     {
-        $record = new Record(RecordType::LEND, 'Lend for party', new \DateTimeImmutable(), [
-            new Transaction(new ParticipantId('pA'), new ParticipantId('pB'), new Money(200)),
-            new Transaction(new ParticipantId('pA'), new ParticipantId('pC'), new Money(100)),
-            new Transaction(new ParticipantId('pA'), new ParticipantId('pD'), new Money(50)),
-        ]);
+        $record = $this->tester->createRecordLend(['transactions' => [
+            $this->tester->createTransaction('pA', 'pB', 200),
+            $this->tester->createTransaction('pA', 'pC', 100),
+            $this->tester->createTransaction('pA', 'pD', 50),
+        ]]);
 
         $expected = new MoneyBreakdown(
             [
@@ -37,11 +36,11 @@ class RecordTest extends Unit
 
     public function testCalculateBalancePayBack()
     {
-        $record = new Record(RecordType::PAY_BACK, 'Pay back for party', new \DateTimeImmutable(), [
-            new Transaction(new ParticipantId('pB'), new ParticipantId('pA'), new Money(200)),
-            new Transaction(new ParticipantId('pC'), new ParticipantId('pA'), new Money(100)),
-            new Transaction(new ParticipantId('pD'), new ParticipantId('pA'), new Money(50)),
-        ]);
+        $record = $this->tester->createRecordPayback(['transactions' => [
+            $this->tester->createTransaction('pB', 'pA', 200),
+            $this->tester->createTransaction('pC', 'pA', 100),
+            $this->tester->createTransaction('pD', 'pA', 50),
+        ]]);
 
         $expected = new MoneyBreakdown(
             [
@@ -58,11 +57,11 @@ class RecordTest extends Unit
 
     public function testCalculateBalanceDebtCancellation()
     {
-        $record = new Record(RecordType::DEBT_CANCELLATION, 'Lend for party', new \DateTimeImmutable(), [
-            new Transaction(new ParticipantId('pA'), new ParticipantId('pB'), new Money(200)),
-            new Transaction(new ParticipantId('pA'), new ParticipantId('pC'), new Money(100)),
-            new Transaction(new ParticipantId('pA'), new ParticipantId('pD'), new Money(50)),
-        ]);
+        $record = $this->tester->createRecordDebtCancellation(['transactions' => [
+            $this->tester->createTransaction('pA', 'pB', 200),
+            $this->tester->createTransaction('pA', 'pC', 100),
+            $this->tester->createTransaction('pA', 'pD', 50),
+        ]]);
 
         $expected = new MoneyBreakdown(
             [

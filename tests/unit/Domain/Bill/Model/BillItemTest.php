@@ -4,17 +4,19 @@ declare(strict_types=1);
 
 namespace App\Tests\unit\Domain\Bill\Model;
 
-use App\Domain\Bill\Model\BillItem;
 use App\Domain\Money\Model\Money;
 use App\Domain\Money\Model\MoneyBreakdown;
 use App\Domain\ParticipantGroup\Model\ParticipantId;
+use App\Tests\UnitTester;
 use Codeception\Test\Unit;
 
 class BillItemTest extends Unit
 {
+    protected UnitTester $tester;
+
     public function testCalculateBreakdownEqual()
     {
-        $billItem = new BillItem('Pizza');
+        $billItem = $this->tester->createBillItem(['title' => 'Pizza']);
         $billItem->setCost(new Money(400));
 
         $pA = new ParticipantId('participant-A');
@@ -41,7 +43,7 @@ class BillItemTest extends Unit
 
     public function testCalculateBreakdownAllPayForD()
     {
-        $billItem = new BillItem('Pizza');
+        $billItem = $this->tester->createBillItem(['title' => 'Pizza']);
         $billItem->setCost(new Money(300));
 
         $pA = new ParticipantId('participant-A');
@@ -70,7 +72,7 @@ class BillItemTest extends Unit
 
     public function testCalculateBreakdownADoesntBuyAllPayForD()
     {
-        $billItem = new BillItem('Pizza');
+        $billItem = $this->tester->createBillItem(['title' => 'Pizza']);
         $billItem->setCost(new Money(300));
 
         $pA = new ParticipantId('participant-A');
@@ -98,7 +100,7 @@ class BillItemTest extends Unit
 
     public function testCalculateBreakdownCPayForD()
     {
-        $billItem = new BillItem('Pizza');
+        $billItem = $this->tester->createBillItem(['title' => 'Pizza']);
         $billItem->setCost(new Money(400));
 
         $pA = new ParticipantId('participant-A');

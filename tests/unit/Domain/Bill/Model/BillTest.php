@@ -4,15 +4,16 @@ declare(strict_types=1);
 
 namespace App\Tests\unit\Domain\Bill\Model;
 
-use App\Domain\Bill\Model\Bill;
-use App\Domain\Bill\Model\BillItem;
 use App\Domain\Money\Model\Money;
 use App\Domain\Money\Model\MoneyBreakdown;
 use App\Domain\ParticipantGroup\Model\ParticipantId;
+use App\Tests\UnitTester;
 use Codeception\Test\Unit;
 
 class BillTest extends Unit
 {
+    protected UnitTester $tester;
+
     public function testCalculateTotalBreakdown()
     {
         $pA = new ParticipantId('participant-A');
@@ -21,14 +22,20 @@ class BillTest extends Unit
         $pD = new ParticipantId('participant-D');
 
         // all pay equally
-        $item1 = new BillItem('beer', new Money(400));
+        $item1 = $this->tester->createBillItem([
+            'title' => 'beer',
+            'cost' => new Money(400),
+        ]);
         $item1->addPayment($pA, $pA);
         $item1->addPayment($pB, $pB);
         $item1->addPayment($pC, $pC);
         $item1->addPayment($pD, $pD);
 
         // all pay for D
-        $item2 = new BillItem('pizza', new Money(300));
+        $item2 = $this->tester->createBillItem([
+            'title' => 'pizza',
+            'cost' => new Money(300),
+        ]);
         $item2->addPayment($pA, $pA);
         $item2->addPayment($pB, $pB);
         $item2->addPayment($pC, $pC);
@@ -37,20 +44,26 @@ class BillTest extends Unit
         $item2->addPayment($pC, $pD);
 
         // A doesn't buy, all pay for D
-        $item3 = new BillItem('salad', new Money(300));
+        $item3 = $this->tester->createBillItem([
+            'title' => 'salad',
+            'cost' => new Money(300),
+        ]);
         $item3->addPayment($pB, $pB);
         $item3->addPayment($pC, $pC);
         $item3->addPayment($pA, $pD);
         $item3->addPayment($pB, $pD);
         $item3->addPayment($pC, $pD);
 
-        $item4 = new BillItem('meat', new Money(400));
+        $item4 = $this->tester->createBillItem([
+            'title' => 'meat',
+            'cost' => new Money(400),
+        ]);
         $item4->addPayment($pA, $pA);
         $item4->addPayment($pB, $pB);
         $item4->addPayment($pC, $pC);
         $item4->addPayment($pC, $pD);
 
-        $bill = new Bill();
+        $bill = $this->tester->createBill();
         $bill->addItem($item1);
         $bill->addItem($item2);
         $bill->addItem($item3);
@@ -73,24 +86,42 @@ class BillTest extends Unit
 
     public function testAddItem()
     {
-        $bill = new Bill();
+        $bill = $this->tester->createBill();
         $this->assertEquals(0, $bill->getCount());
 
-        $bill->addItem(new BillItem('item-1', new Money(100.12)));
+        $bill->addItem($this->tester->createBillItem([
+            'title' => 'item-1',
+            'cost' => new Money(100.12),
+        ]));
         $this->assertEquals(1, $bill->getCount());
 
-        $bill->addItem(new BillItem('item-2', new Money(200.15)));
+        $bill->addItem($this->tester->createBillItem([
+            'title' => 'item-2',
+            'cost' => new Money(200.15),
+        ]));
         $this->assertEquals(2, $bill->getCount());
     }
 
     public function testCalculateTotal()
     {
-        $billItem1 = new BillItem('item-1', new Money(100.12));
-        $billItem2 = new BillItem('item-2', new Money(200.15));
-        $billItem3 = new BillItem('item-3', new Money(333.01));
-        $discount = new BillItem('discount', new Money(-100.20));
+        $billItem1 = $this->tester->createBillItem([
+            'title' => 'item-1',
+            'cost' => new Money(100.12),
+        ]);
+        $billItem2 = $this->tester->createBillItem([
+            'title' => 'item-2',
+            'cost' => new Money(200.15),
+        ]);
+        $billItem3 = $this->tester->createBillItem([
+            'title' => 'item-3',
+            'cost' => new Money(333.01),
+        ]);
+        $discount = $this->tester->createBillItem([
+            'title' => 'discount',
+            'cost' => new Money(-100.20),
+        ]);
 
-        $bill = new Bill();
+        $bill = $this->tester->createBill();
         $bill->addItem($billItem1);
         $bill->addItem($billItem2);
         $bill->addItem($billItem3);
