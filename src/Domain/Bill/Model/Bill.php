@@ -19,7 +19,7 @@ class Bill
     /** @var BillItem[] */
     private array $items = [];
 
-    private MoneyBreakdown $deposit;
+    private MoneyBreakdown $participantDeposits;
 
     public function addItem(BillItem $item): void
     {
@@ -34,7 +34,7 @@ class Bill
         return array_map(fn (BillItem $i) => new BillItemView($i), $this->items);
     }
 
-    public function calculateTotal(): Money
+    public function calculateTotalCost(): Money
     {
         $total = new Money();
         foreach ($this->items as $item) {
@@ -51,7 +51,7 @@ class Bill
 
     public function calculateTotalBreakdown(): MoneyBreakdown
     {
-        $total = $this->calculateTotal();
+        $total = $this->calculateTotalCost();
 
         return $this->mergeItemBreakdowns()->roundWithCorrection($total);
     }
@@ -70,12 +70,12 @@ class Bill
     private function calculateBalance(): MoneyBreakdown
     {
         $totalCostBreakdown = $this->calculateTotalBreakdown();
-        $deposit = $this->deposit;
-        $allKeys = array_unique(array_merge($deposit->keys(), $totalCostBreakdown->keys()));
+        $deposits = $this->participantDeposits;
+        $allKeys = array_unique(array_merge($deposits->keys(), $totalCostBreakdown->keys()));
 
         $balance = new MoneyBreakdown();
         foreach ($allKeys as $key) {
-            $participantBalance = $deposit->get($key)->sub($totalCostBreakdown->get($key));
+            $participantBalance = $deposits->get($key)->sub($totalCostBreakdown->get($key));
             $balance = $balance->add($key, $participantBalance);
         }
 

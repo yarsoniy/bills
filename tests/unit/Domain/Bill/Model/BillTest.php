@@ -76,7 +76,7 @@ class BillTest extends Unit
         ]);
 
         $actual = $bill->calculateTotalBreakdown();
-        $this->assertEquals($bill->calculateTotal(), $actual->sum());
+        $this->assertEquals($bill->calculateTotalCost(), $actual->sum());
 
         $this->assertEquals($expected, $actual);
     }
@@ -99,7 +99,7 @@ class BillTest extends Unit
         $this->assertEquals(2, $bill->getCount());
     }
 
-    public function testCalculateTotal()
+    public function testCalculateTotalCost()
     {
         $billItem1 = $this->tester->createBillItem([
             'title' => 'item-1',
@@ -125,7 +125,7 @@ class BillTest extends Unit
         $bill->addItem($discount);
 
         $expected = new Money(533.08);
-        $actual = $bill->calculateTotal();
+        $actual = $bill->calculateTotalCost();
 
         $this->assertEqualsWithDelta($expected, $actual, 0.01);
     }
