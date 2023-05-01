@@ -6,10 +6,10 @@ namespace App\Infrastructure\Uuid;
 
 use Ramsey\Uuid\Uuid;
 
-class RamseyUuidService
+class RamseyUuidService implements UuidServiceInterface
 {
     public function generate(): string
     {
-        return Uuid::uuid4();
+        return Uuid::uuid4()->toString();
     }
 }
