@@ -19,3 +19,7 @@
 .php-cs-fixer.php
 .php-cs-fixer.cache
 ###< php-cs-fixer ###
+
+###> phpStorm ###
+/.idea/
+###< phpStorm ###
