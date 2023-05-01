@@ -4,13 +4,35 @@ declare(strict_types=1);
 
 namespace App\Application\UseCase;
 
+use App\Domain\ParticipantGroup\Model\Participant;
+use App\Domain\ParticipantGroup\Model\ParticipantGroup;
+use App\Domain\ParticipantGroup\Model\ParticipantGroupId;
+use App\Domain\ParticipantGroup\Model\ParticipantId;
+use App\Domain\ParticipantGroup\Service\ParticipantGroupRepositoryInterface;
+
 class ParticipantGroupService
 {
-    public function createGroup()
-    {
+    public function __construct(
+        readonly private ParticipantGroupRepositoryInterface $repository
+    ) {
     }
 
-    public function createParticipant()
+    public function createGroup(string $title): ParticipantGroupId
     {
+        $group = new ParticipantGroup($this->repository->nextId());
+        $group->setTitle($title);
+        $this->repository->add($group);
+
+        return $group->getId();
+    }
+
+    public function addParticipant(ParticipantGroupId $groupId, string $name): ParticipantId
+    {
+        $group = $this->repository->getById($groupId);
+        $participantId = $this->repository->nextParticipantId();
+        $group->addParticipant(new Participant($participantId));
+        $group->setParticipantName($participantId, $name);
+
+        return $participantId;
     }
 }

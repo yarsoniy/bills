@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Domain\ParticipantGroup\Model;
 
+use App\Domain\ParticipantGroup\Exception\ParticipantNotFoundException;
 use App\Domain\ParticipantGroup\View\ParticipantView;
 
 class ParticipantGroup
@@ -18,6 +19,12 @@ class ParticipantGroup
      * @var Participant[]
      */
     private array $participants;
+
+    public function __construct(ParticipantGroupId $id)
+    {
+        $this->id = $id;
+        $this->createdAt = new \DateTimeImmutable();
+    }
 
     public function getId(): ParticipantGroupId
     {
@@ -44,10 +51,26 @@ class ParticipantGroup
         $this->participants[$participant->getId()->id] = $participant;
     }
 
+    private function getParticipant(ParticipantId $id): Participant
+    {
+        $participant = $this->participants[$id->id] ?? null;
+        if (!$participant) {
+            throw ParticipantNotFoundException::withId($id);
+        }
+
+        return $participant;
+    }
+
+    public function setParticipantName(ParticipantId $id, string $name): void
+    {
+        $participant = $this->getParticipant($id);
+        $participant->setName($name);
+    }
+
     /**
      * @return ParticipantView[]
      */
-    public function getParticipants(): array
+    public function getParticipantsView(): array
     {
         return array_map(fn (Participant $p) => new ParticipantView($p), $this->participants);
     }

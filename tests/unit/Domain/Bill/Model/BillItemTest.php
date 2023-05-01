@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Tests\unit\Domain\Bill\Model;
 
-use App\Domain\Money\Model\Money;
 use App\Domain\ParticipantGroup\Model\ParticipantId;
 use App\Tests\UnitTester;
 use Codeception\Test\Unit;
@@ -15,17 +14,21 @@ class BillItemTest extends Unit
 
     public function testCalculateBreakdownEqual()
     {
-        $billItem = $this->tester->createBillItem(['title' => 'Pizza']);
-        $billItem->setCost(new Money(400));
-
         $pA = new ParticipantId('participant-A');
         $pB = new ParticipantId('participant-B');
         $pC = new ParticipantId('participant-C');
         $pD = new ParticipantId('participant-D');
-        $billItem->addPayment($pA, $pA);
-        $billItem->addPayment($pB, $pB);
-        $billItem->addPayment($pC, $pC);
-        $billItem->addPayment($pD, $pD);
+
+        $billItem = $this->tester->createBillItem([
+            'id' => 'pizza',
+            'cost' => 400,
+            'payments' => [
+                [$pA, $pA],
+                [$pB, $pB],
+                [$pC, $pC],
+                [$pD, $pD],
+            ],
+        ]);
 
         $expected = $this->tester->createMoneyBreakdown([
             'participant-A' => 100,
@@ -40,20 +43,23 @@ class BillItemTest extends Unit
 
     public function testCalculateBreakdownAllPayForD()
     {
-        $billItem = $this->tester->createBillItem(['title' => 'Pizza']);
-        $billItem->setCost(new Money(300));
-
         $pA = new ParticipantId('participant-A');
         $pB = new ParticipantId('participant-B');
         $pC = new ParticipantId('participant-C');
         $pD = new ParticipantId('participant-D');
 
-        $billItem->addPayment($pA, $pA);
-        $billItem->addPayment($pB, $pB);
-        $billItem->addPayment($pC, $pC);
-        $billItem->addPayment($pA, $pD);
-        $billItem->addPayment($pB, $pD);
-        $billItem->addPayment($pC, $pD);
+        $billItem = $this->tester->createBillItem([
+            'id' => 'pizza',
+            'cost' => 300,
+            'payments' => [
+                [$pA, $pA],
+                [$pB, $pB],
+                [$pC, $pC],
+                [$pA, $pD],
+                [$pB, $pD],
+                [$pC, $pD],
+            ],
+        ]);
 
         $expected = $this->tester->createMoneyBreakdown([
             'participant-A' => 100,
@@ -67,19 +73,22 @@ class BillItemTest extends Unit
 
     public function testCalculateBreakdownADoesntBuyAllPayForD()
     {
-        $billItem = $this->tester->createBillItem(['title' => 'Pizza']);
-        $billItem->setCost(new Money(300));
-
         $pA = new ParticipantId('participant-A');
         $pB = new ParticipantId('participant-B');
         $pC = new ParticipantId('participant-C');
         $pD = new ParticipantId('participant-D');
 
-        $billItem->addPayment($pB, $pB);
-        $billItem->addPayment($pC, $pC);
-        $billItem->addPayment($pA, $pD);
-        $billItem->addPayment($pB, $pD);
-        $billItem->addPayment($pC, $pD);
+        $billItem = $this->tester->createBillItem([
+            'id' => 'pizza',
+            'cost' => 300,
+            'payments' => [
+                [$pB, $pB],
+                [$pC, $pC],
+                [$pA, $pD],
+                [$pB, $pD],
+                [$pC, $pD],
+            ],
+        ]);
 
         $expected = $this->tester->createMoneyBreakdown([
             'participant-A' => 33.33,
@@ -93,18 +102,21 @@ class BillItemTest extends Unit
 
     public function testCalculateBreakdownCPayForD()
     {
-        $billItem = $this->tester->createBillItem(['title' => 'Pizza']);
-        $billItem->setCost(new Money(400));
-
         $pA = new ParticipantId('participant-A');
         $pB = new ParticipantId('participant-B');
         $pC = new ParticipantId('participant-C');
         $pD = new ParticipantId('participant-D');
 
-        $billItem->addPayment($pA, $pA);
-        $billItem->addPayment($pB, $pB);
-        $billItem->addPayment($pC, $pC);
-        $billItem->addPayment($pC, $pD);
+        $billItem = $this->tester->createBillItem([
+            'id' => 'pizza',
+            'cost' => 400,
+            'payments' => [
+                [$pA, $pA],
+                [$pB, $pB],
+                [$pC, $pC],
+                [$pC, $pD],
+            ],
+        ]);
 
         $expected = $this->tester->createMoneyBreakdown([
             'participant-A' => 100,

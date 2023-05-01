@@ -12,6 +12,12 @@ class Participant
 
     private \DateTimeImmutable $createdAt;
 
+    public function __construct(ParticipantId $id)
+    {
+        $this->id = $id;
+        $this->createdAt = new \DateTimeImmutable();
+    }
+
     public function getId(): ParticipantId
     {
         return $this->id;

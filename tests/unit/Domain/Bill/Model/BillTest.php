@@ -22,45 +22,52 @@ class BillTest extends Unit
 
         // all pay equally
         $item1 = $this->tester->createBillItem([
-            'title' => 'beer',
-            'cost' => new Money(400),
+            'id' => 'beer',
+            'cost' => 400,
+            'payments' => [
+                [$pA, $pA],
+                [$pB, $pB],
+                [$pC, $pC],
+                [$pD, $pD],
+            ],
         ]);
-        $item1->addPayment($pA, $pA);
-        $item1->addPayment($pB, $pB);
-        $item1->addPayment($pC, $pC);
-        $item1->addPayment($pD, $pD);
 
         // all pay for D
         $item2 = $this->tester->createBillItem([
-            'title' => 'pizza',
-            'cost' => new Money(300),
+            'id' => 'pizza',
+            'cost' => 300,
+            'payments' => [
+                [$pA, $pA],
+                [$pB, $pB],
+                [$pC, $pC],
+                [$pA, $pD],
+                [$pB, $pD],
+                [$pC, $pD],
+            ],
         ]);
-        $item2->addPayment($pA, $pA);
-        $item2->addPayment($pB, $pB);
-        $item2->addPayment($pC, $pC);
-        $item2->addPayment($pA, $pD);
-        $item2->addPayment($pB, $pD);
-        $item2->addPayment($pC, $pD);
 
         // A doesn't buy, all pay for D
         $item3 = $this->tester->createBillItem([
-            'title' => 'salad',
-            'cost' => new Money(300),
+            'id' => 'salad',
+            'cost' => 300,
+            'payments' => [
+                [$pB, $pB],
+                [$pC, $pC],
+                [$pA, $pD],
+                [$pB, $pD],
+                [$pC, $pD],
+            ],
         ]);
-        $item3->addPayment($pB, $pB);
-        $item3->addPayment($pC, $pC);
-        $item3->addPayment($pA, $pD);
-        $item3->addPayment($pB, $pD);
-        $item3->addPayment($pC, $pD);
-
         $item4 = $this->tester->createBillItem([
-            'title' => 'meat',
-            'cost' => new Money(400),
+            'id' => 'meat',
+            'cost' => 400,
+            'payments' => [
+                [$pA, $pA],
+                [$pB, $pB],
+                [$pC, $pC],
+                [$pC, $pD],
+            ],
         ]);
-        $item4->addPayment($pA, $pA);
-        $item4->addPayment($pB, $pB);
-        $item4->addPayment($pC, $pC);
-        $item4->addPayment($pC, $pD);
 
         $bill = $this->tester->createBill();
         $bill->addItem($item1);
@@ -87,14 +94,14 @@ class BillTest extends Unit
         $this->assertEquals(0, $bill->getCount());
 
         $bill->addItem($this->tester->createBillItem([
-            'title' => 'item-1',
-            'cost' => new Money(100.12),
+            'id' => 'item-1',
+            'cost' => 100.12,
         ]));
         $this->assertEquals(1, $bill->getCount());
 
         $bill->addItem($this->tester->createBillItem([
-            'title' => 'item-2',
-            'cost' => new Money(200.15),
+            'id' => 'item-2',
+            'cost' => 200.15,
         ]));
         $this->assertEquals(2, $bill->getCount());
     }
@@ -102,20 +109,20 @@ class BillTest extends Unit
     public function testCalculateTotalCost()
     {
         $billItem1 = $this->tester->createBillItem([
-            'title' => 'item-1',
-            'cost' => new Money(100.12),
+            'id' => 'item-1',
+            'cost' => 100.12,
         ]);
         $billItem2 = $this->tester->createBillItem([
-            'title' => 'item-2',
-            'cost' => new Money(200.15),
+            'id' => 'item-2',
+            'cost' => 200.15,
         ]);
         $billItem3 = $this->tester->createBillItem([
-            'title' => 'item-3',
-            'cost' => new Money(333.01),
+            'id' => 'item-3',
+            'cost' => 333.01,
         ]);
         $discount = $this->tester->createBillItem([
-            'title' => 'discount',
-            'cost' => new Money(-100.20),
+            'id' => 'discount',
+            'cost' => -100.20,
         ]);
 
         $bill = $this->tester->createBill();

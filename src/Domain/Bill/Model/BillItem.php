@@ -6,7 +6,6 @@ namespace App\Domain\Bill\Model;
 
 use App\Domain\Money\Model\Money;
 use App\Domain\Money\Model\MoneyBreakdown;
-use App\Domain\ParticipantGroup\Model\ParticipantId;
 
 class BillItem
 {
@@ -19,10 +18,12 @@ class BillItem
     /** @var Payment[] */
     private array $payments;
 
-    public function __construct(string $title, Money $cost = new Money())
+    private \DateTimeImmutable $createdAt;
+
+    public function __construct(BillItemId $id)
     {
-        $this->title = $title;
-        $this->cost = $cost;
+        $this->id = $id;
+        $this->createdAt = new \DateTimeImmutable();
     }
 
     public function getId(): BillItemId
@@ -50,9 +51,14 @@ class BillItem
         $this->cost = $cost;
     }
 
-    public function addPayment(ParticipantId $itemPayer, ParticipantId $itemUser): void
+    public function clearPayments(): void
     {
-        $this->payments[] = new Payment($itemPayer, $itemUser);
+        $this->payments = [];
+    }
+
+    public function addPayment(Payment $payment): void
+    {
+        $this->payments[] = $payment;
     }
 
     /**
