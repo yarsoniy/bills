@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace App\Tests\unit\Domain\DebtResolver\Service;
 
 use App\Domain\DebtResolver\Service\DebtResolver;
-use App\Domain\Money\Model\Money;
-use App\Domain\Money\Model\MoneyBreakdown;
 use App\Tests\UnitTester;
 use Codeception\Test\Unit;
 
@@ -19,10 +17,10 @@ class DebtResolverTest extends Unit
      *
      * @param array[] $expected
      */
-    public function testResolve(MoneyBreakdown $balance, array $expected): void
+    public function testResolve(array $balance, array $expected): void
     {
         $resolver = new DebtResolver();
-        $actual = $resolver->resolve($balance);
+        $actual = $resolver->resolve($this->tester->createMoneyBreakdown($balance));
         $expectedTransactions = array_map(fn (array $data) => $this->tester->createTransaction(...$data), $expected);
         $this->assertEquals($expectedTransactions, $actual);
     }
@@ -31,14 +29,12 @@ class DebtResolverTest extends Unit
     {
         return [
             [
-                'balance' => new MoneyBreakdown(
-                    [
-                        'pA' => new Money(100),
-                        'pB' => new Money(50),
-                        'pC' => new Money(-60),
-                        'pD' => new Money(-90),
-                    ]
-                ),
+                'balance' => [
+                    'pA' => 100,
+                    'pB' => 50,
+                    'pC' => -60,
+                    'pD' => -90,
+                ],
                 'expected' => [
                     ['pD', 'pB', 50],
                     ['pD', 'pA', 40],

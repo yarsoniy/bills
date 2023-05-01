@@ -9,8 +9,10 @@ use App\Domain\AccountingBook\Model\Record;
 use App\Domain\AccountingBook\Model\Transaction;
 use App\Domain\Bill\Model\Bill;
 use App\Domain\Bill\Model\BillItem;
+use App\Domain\Money\Model\MoneyBreakdown;
 use App\Tests\Helper\FixtureFactory\AccountingBookFixtureFactory;
 use App\Tests\Helper\FixtureFactory\BillFixtureFactory;
+use App\Tests\Helper\FixtureFactory\MoneyBreakdownFixtureFactory;
 use Codeception\Module;
 
 class FixtureHelper extends Module
@@ -53,5 +55,10 @@ class FixtureHelper extends Module
     public function createBillItem(array $params): BillItem
     {
         return (new BillFixtureFactory())->createBillItem($params);
+    }
+
+    public function createMoneyBreakdown(array $breakdown): MoneyBreakdown
+    {
+        return (new MoneyBreakdownFixtureFactory())->create($breakdown);
     }
 }

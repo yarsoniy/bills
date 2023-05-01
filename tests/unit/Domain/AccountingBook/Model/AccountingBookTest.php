@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace App\Tests\unit\Domain\AccountingBook\Model;
 
 use App\Domain\AccountingBook\Model\RecordType;
-use App\Domain\Money\Model\Money;
-use App\Domain\Money\Model\MoneyBreakdown;
 use App\Tests\UnitTester;
 use Codeception\Test\Unit;
 
@@ -21,7 +19,7 @@ class AccountingBookTest extends Unit
      *
      * @return void
      */
-    public function testCalculateBalance(array $records, MoneyBreakdown $expected)
+    public function testCalculateBalance(array $records, array $expected)
     {
         $book = $this->tester->createAccountingBook();
         foreach ($records as $recordData) {
@@ -31,7 +29,8 @@ class AccountingBookTest extends Unit
             $book->addRecord($record);
         }
 
-        $this->assertEquals($expected, $book->calculateBalance());
+        $expectedBreakdown = $this->tester->createMoneyBreakdown($expected);
+        $this->assertEquals($expectedBreakdown, $book->calculateBalance());
     }
 
     public function providerCalculateBalance(): array
@@ -48,14 +47,12 @@ class AccountingBookTest extends Unit
                         ],
                     ],
                 ],
-                'expected' => new MoneyBreakdown(
-                    [
-                        'pA' => new Money(350),
-                        'pB' => new Money(-200),
-                        'pC' => new Money(-100),
-                        'pD' => new Money(-50),
-                    ]
-                ),
+                'expected' => [
+                    'pA' => 350,
+                    'pB' => -200,
+                    'pC' => -100,
+                    'pD' => -50,
+                ],
             ],
             [
                 'records' => [
@@ -76,14 +73,12 @@ class AccountingBookTest extends Unit
                         ],
                     ],
                 ],
-                'expected' => new MoneyBreakdown(
-                    [
-                        'pA' => new Money(130),
-                        'pB' => new Money(-80),
-                        'pC' => new Money(-30),
-                        'pD' => new Money(-20),
-                    ]
-                ),
+                'expected' => [
+                    'pA' => 130,
+                    'pB' => -80,
+                    'pC' => -30,
+                    'pD' => -20,
+                ],
             ],
             [
                 'records' => [
@@ -112,14 +107,12 @@ class AccountingBookTest extends Unit
                         ],
                     ],
                 ],
-                'expected' => new MoneyBreakdown(
-                    [
-                        'pA' => new Money(0),
-                        'pB' => new Money(0),
-                        'pC' => new Money(0),
-                        'pD' => new Money(0),
-                    ]
-                ),
+                'expected' => [
+                    'pA' => 0,
+                    'pB' => 0,
+                    'pC' => 0,
+                    'pD' => 0,
+                ],
             ],
         ];
     }

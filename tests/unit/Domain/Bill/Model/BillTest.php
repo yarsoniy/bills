@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Tests\unit\Domain\Bill\Model;
 
 use App\Domain\Money\Model\Money;
-use App\Domain\Money\Model\MoneyBreakdown;
 use App\Domain\ParticipantGroup\Model\ParticipantId;
 use App\Tests\UnitTester;
 use Codeception\Test\Unit;
@@ -69,14 +68,12 @@ class BillTest extends Unit
         $bill->addItem($item3);
         $bill->addItem($item4);
 
-        $expected = new MoneyBreakdown(
-            [
-                'participant-A' => new Money(333.34),
-                'participant-B' => new Money(433.33),
-                'participant-C' => new Money(533.33),
-                'participant-D' => new Money(100),
-            ]
-        );
+        $expected = $this->tester->createMoneyBreakdown([
+            'participant-A' => 333.34,
+            'participant-B' => 433.33,
+            'participant-C' => 533.33,
+            'participant-D' => 100,
+        ]);
 
         $actual = $bill->calculateTotalBreakdown();
         $this->assertEquals($bill->calculateTotal(), $actual->sum());

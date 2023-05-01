@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace App\Tests\unit\Domain\AccountingBook\Model;
 
-use App\Domain\Money\Model\Money;
-use App\Domain\Money\Model\MoneyBreakdown;
 use App\Tests\UnitTester;
 use Codeception\Test\Unit;
 
@@ -21,14 +19,12 @@ class RecordTest extends Unit
             $this->tester->createTransaction('pA', 'pD', 50),
         ]]);
 
-        $expected = new MoneyBreakdown(
-            [
-                'pA' => new Money(350),
-                'pB' => new Money(-200),
-                'pC' => new Money(-100),
-                'pD' => new Money(-50),
-            ]
-        );
+        $expected = $this->tester->createMoneyBreakdown([
+            'pA' => 350,
+            'pB' => -200,
+            'pC' => -100,
+            'pD' => -50,
+        ]);
 
         $actual = $record->calculateBalance();
         $this->assertEquals($expected, $actual);
@@ -42,14 +38,12 @@ class RecordTest extends Unit
             $this->tester->createTransaction('pD', 'pA', 50),
         ]]);
 
-        $expected = new MoneyBreakdown(
-            [
-                'pA' => new Money(-350),
-                'pB' => new Money(200),
-                'pC' => new Money(100),
-                'pD' => new Money(50),
-            ]
-        );
+        $expected = $this->tester->createMoneyBreakdown([
+            'pA' => -350,
+            'pB' => 200,
+            'pC' => 100,
+            'pD' => 50,
+        ]);
 
         $actual = $record->calculateBalance();
         $this->assertEquals($expected, $actual);
@@ -63,14 +57,12 @@ class RecordTest extends Unit
             $this->tester->createTransaction('pA', 'pD', 50),
         ]]);
 
-        $expected = new MoneyBreakdown(
-            [
-                'pA' => new Money(-350),
-                'pB' => new Money(200),
-                'pC' => new Money(100),
-                'pD' => new Money(50),
-            ]
-        );
+        $expected = $this->tester->createMoneyBreakdown([
+            'pA' => -350,
+            'pB' => 200,
+            'pC' => 100,
+            'pD' => 50,
+        ]);
 
         $actual = $record->calculateBalance();
         $this->assertEquals($expected, $actual);

@@ -5,11 +5,13 @@ declare(strict_types=1);
 namespace App\Tests\unit\Domain\Money\Model;
 
 use App\Domain\Money\Model\Money;
-use App\Domain\Money\Model\MoneyBreakdown;
+use App\Tests\UnitTester;
 use Codeception\Test\Unit;
 
 class MoneyTest extends Unit
 {
+    protected UnitTester $tester;
+
     public function testAdd()
     {
         $a = new Money(777.23);
@@ -72,16 +74,12 @@ class MoneyTest extends Unit
     public function testSplitByKey()
     {
         $a = new Money(1000);
-
-        $expected = new MoneyBreakdown(
-            [
-                'key1' => new Money(333.33333),
-                'key2' => new Money(333.33333),
-                'key3' => new Money(333.33333),
-            ]
-        );
+        $expected = $this->tester->createMoneyBreakdown([
+            'key1' => 333.33333,
+            'key2' => 333.33333,
+            'key3' => 333.33333,
+        ]);
         $actual = $a->splitByKey(['key1', 'key2', 'key3']);
-
         $this->assertEqualsWithDelta($expected, $actual, 0.00001);
     }
 
@@ -90,25 +88,25 @@ class MoneyTest extends Unit
      *
      * @return void
      */
-    public function testRound(Money $original, Money $expected)
+    public function testRound(float $original, float $expected)
     {
-        $this->assertEquals($expected, $original->round());
+        $this->assertEquals(new Money($expected), (new Money($original))->round());
     }
 
     public function providerRound(): array
     {
         return [
             [
-                'original' => new Money(33.333333),
-                'expected' => new Money(33.33),
+                'original' => 33.333333,
+                'expected' => 33.33,
             ],
             [
-                'original' => new Money(66.666666),
-                'expected' => new Money(66.67),
+                'original' => 66.666666,
+                'expected' => 66.67,
             ],
             [
-                'original' => new Money(20.025),
-                'expected' => new Money(20.03),
+                'original' => 20.025,
+                'expected' => 20.03,
             ],
         ];
     }
