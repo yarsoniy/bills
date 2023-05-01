@@ -14,7 +14,7 @@ class ValidationHelper
 {
     public function __construct(
         readonly private ValidatorInterface $validator,
-        readonly private ErrorFormatter $errorFormatter
+        readonly private ResponseFormatter $errorFormatter
     ) {
     }
 

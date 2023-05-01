@@ -6,9 +6,23 @@ namespace App\Controller\Shared;
 
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 
-class ErrorFormatter
+class ResponseFormatter
 {
-    public function formatError(string $msg, array $path, $details = null): array
+    public function formatSuccess(?string $msg, array $data = []): array
+    {
+        $response = [];
+        $response['success'] = true;
+        if ($msg) {
+            $response['message'] = $msg;
+        }
+        if ($data) {
+            $response['data'] = $data;
+        }
+
+        return $response;
+    }
+
+    public function formatError(string $msg, array $path = [], $details = null): array
     {
         $error = [];
         $error['message'] = $msg;

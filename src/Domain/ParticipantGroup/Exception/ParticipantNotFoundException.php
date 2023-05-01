@@ -10,6 +10,6 @@ class ParticipantNotFoundException extends \DomainException
 {
     public static function withId(ParticipantId $id): self
     {
-        return new self('Participant not found with id: '.$id->id);
+        return new self("Participant not found with id: '{$id->id}'");
     }
 }
