@@ -5,6 +5,8 @@ fos_rest:
     routing_loader: false
     body_listener:
       enabled: true
+    body_converter:
+      enabled: true
 #    view:
 #        view_response_listener:  true
 #    exception:
