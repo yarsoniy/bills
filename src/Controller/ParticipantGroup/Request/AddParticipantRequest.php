@@ -4,19 +4,18 @@ declare(strict_types=1);
 
 namespace App\Controller\ParticipantGroup\Request;
 
+use JMS\Serializer\Annotation as Serializer;
 use Symfony\Component\Validator\Constraints as Assert;
 
-readonly class AddParticipantRequest
+class AddParticipantRequest
 {
-    public function __construct(
-        #[Assert\NotBlank]
-        public ?string $name,
+    #[Assert\NotBlank]
+    #[Serializer\Type('string')]
+    /** @var string */
+    public $name;
 
-        #[Assert\Type(CreateParticipantGroupRequest::class)]
-        /**
-         * @var CreateParticipantGroupRequest
-         */
-        public CreateParticipantGroupRequest $group,
-    ) {
-    }
+    #[Assert\Valid]
+    #[Serializer\Type(CreateParticipantGroupRequest::class)]
+    /** @var CreateParticipantGroupRequest */
+    public $group;
 }

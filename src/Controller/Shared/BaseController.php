@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace App\Controller\Shared;
 
+use JMS\Serializer\SerializerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -17,7 +19,13 @@ abstract class BaseController extends AbstractController
     public function __construct(
         readonly private ResponseFormatter $formatter,
         readonly private ValidatorInterface $validator,
+        readonly private SerializerInterface $serializer,
     ) {
+    }
+
+    protected function parseRequest(Request $request, string $class): object
+    {
+        return $this->serializer->deserialize($request->getContent(), $class, 'json');
     }
 
     protected function success(array $data = [], int $status = Response::HTTP_OK): JsonResponse
@@ -44,9 +52,15 @@ abstract class BaseController extends AbstractController
         return $this->validateInput($input);
     }
 
-    protected function validateParams(array $input, array $constraints): ConstraintViolationListInterface
+    /**
+     * @param Constraint[] $constraints
+     */
+    protected function validateUrlParams(array $urlParams, array $constraints): ConstraintViolationListInterface
     {
-        return $this->validateInput($input, new Assert\Collection($constraints, null, null, true));
+        return $this->validateInput(
+            ['url' => $urlParams],
+            new Assert\Collection(['url' => new Assert\Collection($constraints)])
+        );
     }
 
     /**

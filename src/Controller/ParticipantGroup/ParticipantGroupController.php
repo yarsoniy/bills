@@ -10,41 +10,44 @@ use App\Controller\ParticipantGroup\Request\CreateParticipantGroupRequest;
 use App\Controller\Shared\BaseController;
 use App\Domain\ParticipantGroup\Exception\ParticipantGroupNotFoundException;
 use App\Domain\ParticipantGroup\Model\ParticipantGroupId;
-use FOS\RestBundle\Controller\Annotations\Post;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Validator\Constraints as Assert;
-use Symfony\Component\Validator\ConstraintViolationListInterface;
 
 class ParticipantGroupController extends BaseController
 {
-    #[Post('/api/v1/participant_group')]
-    #[ParamConverter('request', converter: 'fos_rest.request_body')]
+    #[Route('/api/v1/participant_group', methods: 'POST')]
     public function create(
-        CreateParticipantGroupRequest $request,
-        ConstraintViolationListInterface $validationErrors,
+        Request $request,
         ParticipantGroupService $participantGroupService
     ): JsonResponse {
+        /** @var CreateParticipantGroupRequest $dto */
+        $dto = $this->parseRequest($request, CreateParticipantGroupRequest::class);
+        $validationErrors = $this->validateObject($dto);
         if ($validationErrors->count()) {
             return $this->errorValidationFailed($validationErrors);
         }
-        $groupId = $participantGroupService->createGroup($request->title);
+
+        $groupId = $participantGroupService->createGroup($dto->title);
 
         return $this->success(['id' => $groupId->id]);
     }
 
-    #[Post('/api/v1/participant_group/{groupId}/participant')]
-    #[ParamConverter('request', converter: 'fos_rest.request_body')]
+    #[Route('/api/v1/participant_group/{groupId}/participant', methods: 'POST')]
     public function addParticipant(
         $groupId,
-        AddParticipantRequest $request,
+        Request $request,
         ParticipantGroupService $participantGroupService
     ): JsonResponse {
-        $validationErrors = $this->validateParams(
+        /** @var AddParticipantRequest $dto */
+        $dto = $this->parseRequest($request, AddParticipantRequest::class);
+
+        $validationErrors = $this->validateUrlParams(
             ['groupId' => $groupId],
             ['groupId' => new Assert\Uuid()]
         );
-        $validationErrors->addAll($this->validateObject($request));
+        $validationErrors->addAll($this->validateObject($dto));
 
         if ($validationErrors->count()) {
             return $this->errorValidationFailed($validationErrors);
@@ -53,7 +56,7 @@ class ParticipantGroupController extends BaseController
         try {
             $participantId = $participantGroupService->addParticipant(
                 new ParticipantGroupId($groupId),
-                $request->name
+                $dto->name
             );
         } catch (ParticipantGroupNotFoundException $e) {
             return $this->errorNotFound($e->getMessage());
