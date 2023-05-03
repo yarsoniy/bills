@@ -9,5 +9,6 @@ use Symfony\Component\Validator\Constraints as Assert;
 class CreateParticipantGroupRequest
 {
     #[Assert\NotBlank]
-    public ?string $title = null;
+    /** @var string */
+    public $title;
 }
