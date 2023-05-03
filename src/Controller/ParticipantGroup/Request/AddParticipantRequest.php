@@ -11,8 +11,4 @@ class AddParticipantRequest
     #[Assert\NotBlank]
     /** @var string */
     public $name;
-
-    #[Assert\Valid]
-    /** @var array<string, CreateParticipantGroupRequest> */
-    public $groups;
 }
