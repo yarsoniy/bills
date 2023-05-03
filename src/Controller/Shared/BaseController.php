@@ -8,8 +8,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Serializer\Exception\NotEncodableValueException;
-use Symfony\Component\Serializer\Exception\NotNormalizableValueException;
+use Symfony\Component\Serializer\Exception\UnexpectedValueException;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -29,7 +28,7 @@ abstract class BaseController extends AbstractController
     {
         try {
             $dto = $this->serializer->deserialize($request->getContent(), $class, 'json');
-        } catch (NotNormalizableValueException|NotEncodableValueException $e) {
+        } catch (UnexpectedValueException $e) {
             $dto = null;
         }
 
