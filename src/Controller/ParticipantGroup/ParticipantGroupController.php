@@ -23,7 +23,10 @@ class ParticipantGroupController extends BaseController
         ParticipantGroupService $participantGroupService
     ): JsonResponse {
         /** @var CreateParticipantGroupRequest $dto */
-        $dto = $this->parseRequest($request, CreateParticipantGroupRequest::class);
+        if (!$dto = $this->parseRequest($request, CreateParticipantGroupRequest::class)) {
+            return $this->errorCantParseRequest();
+        }
+
         $validationErrors = $this->validateObject($dto);
         if ($validationErrors->count()) {
             return $this->errorValidationFailed($validationErrors);
@@ -41,7 +44,9 @@ class ParticipantGroupController extends BaseController
         ParticipantGroupService $participantGroupService
     ): JsonResponse {
         /** @var AddParticipantRequest $dto */
-        $dto = $this->parseRequest($request, AddParticipantRequest::class);
+        if (!$dto = $this->parseRequest($request, AddParticipantRequest::class)) {
+            return $this->errorCantParseRequest();
+        }
 
         $validationErrors = $this->validateUrlParams(
             ['groupId' => $groupId],

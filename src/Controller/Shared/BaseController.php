@@ -8,6 +8,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Serializer\Exception\NotEncodableValueException;
+use Symfony\Component\Serializer\Exception\NotNormalizableValueException;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -23,9 +25,15 @@ abstract class BaseController extends AbstractController
     ) {
     }
 
-    protected function parseRequest(Request $request, string $class): object
+    protected function parseRequest(Request $request, string $class): ?object
     {
-        return $this->serializer->deserialize($request->getContent(), $class, 'json');
+        try {
+            $dto = $this->serializer->deserialize($request->getContent(), $class, 'json');
+        } catch (NotNormalizableValueException|NotEncodableValueException $e) {
+            $dto = null;
+        }
+
+        return $dto;
     }
 
     protected function success(array $data = [], int $status = Response::HTTP_OK): JsonResponse
@@ -43,6 +51,15 @@ abstract class BaseController extends AbstractController
         $httpCode = Response::HTTP_BAD_REQUEST;
         $msg = Response::$statusTexts[$httpCode];
         $errorResult = $this->formatter->formatViolations($msg, $validationErrors);
+
+        return new JsonResponse($errorResult, $httpCode);
+    }
+
+    protected function errorCantParseRequest(): JsonResponse
+    {
+        $httpCode = Response::HTTP_BAD_REQUEST;
+        $msg = "Can't parse request. Please check types and format";
+        $errorResult = $this->formatter->formatError($msg);
 
         return new JsonResponse($errorResult, $httpCode);
     }
