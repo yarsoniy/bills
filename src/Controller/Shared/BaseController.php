@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Controller\Shared;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Exception\JsonException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -24,20 +25,25 @@ abstract class BaseController extends AbstractController
     ) {
     }
 
-    protected function parseRequest(Request $request, string $class, array $groups = ['*']): ?object
+    protected function denormalize(Request $request, string $class, array $groups = ['*']): ?object
     {
         try {
-            $dto = $this->serializer->deserialize(
-                $request->getContent(),
+            $dto = $this->serializer->denormalize(
+                $request->toArray(),
                 $class,
                 'json',
                 ['groups' => $groups]
             );
-        } catch (UnexpectedValueException $e) {
+        } catch (UnexpectedValueException|JsonException $e) {
             $dto = null;
         }
 
         return $dto;
+    }
+
+    protected function normalize(object|array $dto, array $groups = ['*']): array
+    {
+        return $this->serializer->normalize($dto, 'json', ['groups' => $groups]);
     }
 
     protected function success(array $data = [], int $status = Response::HTTP_OK): JsonResponse

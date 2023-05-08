@@ -23,7 +23,7 @@ class ParticipantGroupController extends BaseController
         ParticipantGroupService $participantGroupService
     ): JsonResponse {
         /** @var ParticipantGroupResource $dto */
-        if (!$dto = $this->parseRequest($request, ParticipantGroupResource::class)) {
+        if (!$dto = $this->denormalize($request, ParticipantGroupResource::class)) {
             return $this->errorCantParseRequest();
         }
 
@@ -37,6 +37,28 @@ class ParticipantGroupController extends BaseController
         return $this->success(['id' => $groupId->id]);
     }
 
+    #[Route('/api/v1/participant_group/{groupId}', methods: 'GET')]
+    public function get(
+        $groupId,
+        ParticipantGroupService $participantGroupService
+    ) {
+        $validationErrors = $this->validateUrlParams(
+            ['groupId' => $groupId],
+            ['groupId' => new Assert\Uuid()]
+        );
+        if ($validationErrors->count()) {
+            return $this->errorValidationFailed($validationErrors);
+        }
+
+        $group = $participantGroupService->getGroup(new ParticipantGroupId($groupId));
+        $groupResource = new ParticipantGroupResource(
+            $group->getId()->id,
+            $group->getTitle()
+        );
+
+        return $this->success($this->normalize($groupResource));
+    }
+
     #[Route('/api/v1/participant_group/{groupId}/participant', methods: 'POST')]
     public function addParticipant(
         $groupId,
@@ -44,7 +66,7 @@ class ParticipantGroupController extends BaseController
         ParticipantGroupService $participantGroupService
     ): JsonResponse {
         /** @var ParticipantResource $dto */
-        if (!$dto = $this->parseRequest($request, ParticipantResource::class)) {
+        if (!$dto = $this->denormalize($request, ParticipantResource::class)) {
             return $this->errorCantParseRequest();
         }
 

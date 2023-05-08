@@ -29,6 +29,11 @@ class ParticipantGroupService
         return $group->getId();
     }
 
+    public function getGroup(ParticipantGroupId $id)
+    {
+        return $this->repository->getById($id);
+    }
+
     public function addParticipant(ParticipantGroupId $groupId, string $name): ParticipantId
     {
         $group = $this->repository->getById($groupId);
