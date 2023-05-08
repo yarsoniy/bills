@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Repository\Memory;
+namespace App\Infrastructure\Repository\Memory;
 
 use App\Domain\ParticipantGroup\Exception\ParticipantGroupNotFoundException;
 use App\Domain\ParticipantGroup\Model\ParticipantGroup;
