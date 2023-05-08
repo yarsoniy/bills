@@ -1,23 +1,37 @@
 doctrine:
     dbal:
-        url: '%env(resolve:DATABASE_URL)%'
-
         # IMPORTANT: You MUST configure your server version,
         # either here or in the DATABASE_URL env var (see .env file)
         #server_version: '15'
-
+        connections:
+            default:
+                url: '%env(resolve:DATABASE_URL)%'
+            migrations:
+                url: '%env(resolve:DATABASE_MIGRATIONS_URL)%'
+        default_connection: default
         types:
             ParticipantGroupId: App\Infrastructure\Doctrine\Type\ParticipantGroupIdType
     orm:
         auto_generate_proxy_classes: true
         enable_lazy_ghost_objects: true
-        naming_strategy: doctrine.orm.naming_strategy.underscore_number_aware
-        auto_mapping: true
-        mappings:
-            App:
-                is_bundle: false
-                dir: '%kernel.project_dir%/src/Domain'
-                prefix: 'App\Domain'
+        entity_managers:
+            default:
+                connection: default
+                naming_strategy: doctrine.orm.naming_strategy.underscore_number_aware
+                auto_mapping: true
+                mappings:
+                  App:
+                    is_bundle: false
+                    dir: '%kernel.project_dir%/src/Domain'
+                    prefix: 'App\Domain'
+            migrations:
+                connection: migrations
+                naming_strategy: doctrine.orm.naming_strategy.underscore_number_aware
+                mappings:
+                  App:
+                    is_bundle: false
+                    dir: '%kernel.project_dir%/src/Domain'
+                    prefix: 'App\Domain'
 
 when@test:
     doctrine:
