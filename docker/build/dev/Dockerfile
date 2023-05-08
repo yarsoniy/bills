@@ -7,9 +7,15 @@ RUN apt-get update && \
     git \
     zip \
     unzip \
-    libzip-dev
+    libzip-dev \
+    libpq-dev \
+    && rm -rf /var/lib/apt/lists/*
 
-RUN docker-php-ext-install zip
+RUN docker-php-ext-install \
+    zip \
+    pdo \
+    pdo_pgsql \
+    && rm -rf /tmp/* /var/tmp/* /var/cache/*
 
 COPY --from=composer:2.5.5 /usr/bin/composer /usr/bin/composer
 VOLUME /code

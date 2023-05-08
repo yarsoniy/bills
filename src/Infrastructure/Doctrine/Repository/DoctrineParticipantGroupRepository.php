@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Infrastructure\Repository\Memory;
+namespace App\Infrastructure\Doctrine\Repository;
 
 use App\Domain\ParticipantGroup\Exception\ParticipantGroupNotFoundException;
 use App\Domain\ParticipantGroup\Model\ParticipantGroup;
@@ -10,14 +10,19 @@ use App\Domain\ParticipantGroup\Model\ParticipantGroupId;
 use App\Domain\ParticipantGroup\Model\ParticipantId;
 use App\Domain\ParticipantGroup\Service\ParticipantGroupRepositoryInterface;
 use App\Infrastructure\Uuid\UuidServiceInterface;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Persistence\ManagerRegistry;
 
-class ParticipantGroupMemoryRepository implements ParticipantGroupRepositoryInterface
+class DoctrineParticipantGroupRepository extends ServiceEntityRepository implements ParticipantGroupRepositoryInterface
 {
-    private array $collection;
+    private readonly UuidServiceInterface $uuidService;
 
     public function __construct(
-        readonly private UuidServiceInterface $uuidService
+        ManagerRegistry $registry,
+        UuidServiceInterface $uuidService
     ) {
+        $this->uuidService = $uuidService;
+        parent::__construct($registry, ParticipantGroup::class);
     }
 
     public function nextId(): ParticipantGroupId
@@ -32,21 +37,21 @@ class ParticipantGroupMemoryRepository implements ParticipantGroupRepositoryInte
 
     public function add(ParticipantGroup $group): void
     {
-        $this->collection[$group->getId()->id] = $group;
+        $this->getEntityManager()->persist($group);
     }
 
     public function findById(ParticipantGroupId $id): ?ParticipantGroup
     {
-        return $this->collection[$id->id] ?? null;
+        return $this->find($id);
     }
 
     public function getById(ParticipantGroupId $id): ParticipantGroup
     {
-        $result = $this->findById($id);
-        if (!$result) {
+        $group = $this->findById($id);
+        if (!$group) {
             throw ParticipantGroupNotFoundException::withId($id);
         }
 
-        return $result;
+        return $group;
     }
 }

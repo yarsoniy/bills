@@ -6,13 +6,21 @@ namespace App\Domain\ParticipantGroup\Model;
 
 use App\Domain\ParticipantGroup\Exception\ParticipantNotFoundException;
 use App\Domain\ParticipantGroup\View\ParticipantView;
+use App\Infrastructure\Doctrine\Repository\DoctrineParticipantGroupRepository;
+use Doctrine\ORM\Mapping as ORM;
 
+#[ORM\Entity(repositoryClass: DoctrineParticipantGroupRepository::class)]
+#[ORM\Table(name: 'participant_groups')]
 class ParticipantGroup
 {
+    #[ORM\Id]
+    #[ORM\Column(type: 'ParticipantGroupId')]
     private ParticipantGroupId $id;
 
+    #[ORM\Column(type: 'string')]
     private string $title;
 
+    #[ORM\Column(name: 'created_at')]
     private \DateTimeImmutable $createdAt;
 
     /**
