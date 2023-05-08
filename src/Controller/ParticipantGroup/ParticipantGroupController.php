@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\Controller\ParticipantGroup;
 
 use App\Application\UseCase\ParticipantGroupService;
-use App\Controller\ParticipantGroup\Request\AddParticipantRequest;
-use App\Controller\ParticipantGroup\Request\CreateParticipantGroupRequest;
+use App\Controller\ParticipantGroup\Resource\ParticipantGroupResource;
+use App\Controller\ParticipantGroup\Resource\ParticipantResource;
 use App\Controller\Shared\BaseController;
 use App\Domain\ParticipantGroup\Exception\ParticipantGroupNotFoundException;
 use App\Domain\ParticipantGroup\Model\ParticipantGroupId;
@@ -22,8 +22,8 @@ class ParticipantGroupController extends BaseController
         Request $request,
         ParticipantGroupService $participantGroupService
     ): JsonResponse {
-        /** @var CreateParticipantGroupRequest $dto */
-        if (!$dto = $this->parseRequest($request, CreateParticipantGroupRequest::class)) {
+        /** @var ParticipantGroupResource $dto */
+        if (!$dto = $this->parseRequest($request, ParticipantGroupResource::class)) {
             return $this->errorCantParseRequest();
         }
 
@@ -32,7 +32,7 @@ class ParticipantGroupController extends BaseController
             return $this->errorValidationFailed($validationErrors);
         }
 
-        $groupId = $participantGroupService->createGroup($dto->title);
+        $groupId = $participantGroupService->createGroup($dto->getTitle());
 
         return $this->success(['id' => $groupId->id]);
     }
@@ -43,8 +43,8 @@ class ParticipantGroupController extends BaseController
         Request $request,
         ParticipantGroupService $participantGroupService
     ): JsonResponse {
-        /** @var AddParticipantRequest $dto */
-        if (!$dto = $this->parseRequest($request, AddParticipantRequest::class)) {
+        /** @var ParticipantResource $dto */
+        if (!$dto = $this->parseRequest($request, ParticipantResource::class)) {
             return $this->errorCantParseRequest();
         }
 
@@ -61,7 +61,7 @@ class ParticipantGroupController extends BaseController
         try {
             $participantId = $participantGroupService->addParticipant(
                 new ParticipantGroupId($groupId),
-                $dto->name
+                $dto->getName()
             );
         } catch (ParticipantGroupNotFoundException $e) {
             return $this->errorNotFound($e->getMessage());

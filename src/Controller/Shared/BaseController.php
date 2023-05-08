@@ -24,10 +24,15 @@ abstract class BaseController extends AbstractController
     ) {
     }
 
-    protected function parseRequest(Request $request, string $class): ?object
+    protected function parseRequest(Request $request, string $class, array $groups = ['*']): ?object
     {
         try {
-            $dto = $this->serializer->deserialize($request->getContent(), $class, 'json');
+            $dto = $this->serializer->deserialize(
+                $request->getContent(),
+                $class,
+                'json',
+                ['groups' => $groups]
+            );
         } catch (UnexpectedValueException $e) {
             $dto = null;
         }
