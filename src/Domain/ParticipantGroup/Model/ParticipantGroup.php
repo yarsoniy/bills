@@ -7,6 +7,8 @@ namespace App\Domain\ParticipantGroup\Model;
 use App\Domain\ParticipantGroup\Exception\ParticipantNotFoundException;
 use App\Domain\ParticipantGroup\View\ParticipantView;
 use App\Infrastructure\Doctrine\Repository\DoctrineParticipantGroupRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: DoctrineParticipantGroupRepository::class)]
@@ -20,18 +22,26 @@ class ParticipantGroup
     #[ORM\Column(type: 'string')]
     private string $title;
 
-    #[ORM\Column(name: 'created_at')]
+    #[ORM\Column(name: 'created_at', type: 'datetime_immutable')]
     private \DateTimeImmutable $createdAt;
 
     /**
-     * @var Participant[]
+     * @var Collection<string, Participant>
      */
-    private array $participants;
+    #[ORM\OneToMany(
+        mappedBy: 'group',
+        targetEntity: Participant::class,
+        cascade: ['persist', 'remove'],
+        orphanRemoval: true,
+        indexBy: 'id'
+    )]
+    private Collection $participants;
 
     public function __construct(ParticipantGroupId $id)
     {
         $this->id = $id;
         $this->createdAt = new \DateTimeImmutable();
+        $this->participants = new ArrayCollection();
     }
 
     public function getId(): ParticipantGroupId
@@ -56,6 +66,12 @@ class ParticipantGroup
 
     public function addParticipant(Participant $participant): void
     {
+        $thisGroupId = $this->getId();
+        $participantGroupId = $participant->getGroup()->getId();
+        if (!$thisGroupId->equals($participantGroupId)) {
+            $msg = "Can't add Participant to Group. Ids don't match: '$thisGroupId' '$participantGroupId'";
+            throw new \LogicException($msg);
+        }
         $this->participants[$participant->getId()->id] = $participant;
     }
 
@@ -80,6 +96,6 @@ class ParticipantGroup
      */
     public function getParticipantsView(): array
     {
-        return array_map(fn (Participant $p) => new ParticipantView($p), $this->participants);
+        return $this->participants->map(fn (Participant $p) => new ParticipantView($p))->toArray();
     }
 }

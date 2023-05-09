@@ -13,6 +13,11 @@ class ParticipantGroupResource
 
         #[Assert\NotBlank]
         private ?string $title,
+
+        private ?\DateTimeImmutable $createdAt,
+
+        /** @var ParticipantResource[] */
+        private ?array $participants
     ) {
     }
 
@@ -24,5 +29,18 @@ class ParticipantGroupResource
     public function getTitle(): ?string
     {
         return $this->title;
+    }
+
+    public function getCreatedAt(): ?\DateTimeImmutable
+    {
+        return $this->createdAt;
+    }
+
+    /**
+     * @return ParticipantResource[]
+     */
+    public function getParticipants(): array
+    {
+        return $this->participants;
     }
 }

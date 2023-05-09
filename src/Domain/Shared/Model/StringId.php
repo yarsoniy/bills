@@ -11,6 +11,11 @@ abstract readonly class StringId
     ) {
     }
 
+    public function equals(self $other): bool
+    {
+        return $this->id === $other->id;
+    }
+
     public function __toString(): string
     {
         return $this->id;

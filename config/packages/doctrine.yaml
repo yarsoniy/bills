@@ -11,6 +11,7 @@ doctrine:
         default_connection: default
         types:
             ParticipantGroupId: App\Infrastructure\Doctrine\Type\ParticipantGroupIdType
+            ParticipantId: App\Infrastructure\Doctrine\Type\ParticipantIdType
     orm:
         auto_generate_proxy_classes: true
         enable_lazy_ghost_objects: true

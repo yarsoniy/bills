@@ -10,6 +10,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Serializer\Exception\UnexpectedValueException;
+use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -32,7 +33,10 @@ abstract class BaseController extends AbstractController
                 $request->toArray(),
                 $class,
                 'json',
-                ['groups' => $groups]
+                [
+                    'groups' => $groups,
+                    DateTimeNormalizer::FORMAT_KEY => 'U', // Unix timestamp
+                ]
             );
         } catch (UnexpectedValueException|JsonException $e) {
             $dto = null;
@@ -43,7 +47,10 @@ abstract class BaseController extends AbstractController
 
     protected function normalize(object|array $dto, array $groups = ['*']): array
     {
-        return $this->serializer->normalize($dto, 'json', ['groups' => $groups]);
+        return $this->serializer->normalize($dto, 'json', [
+            'groups' => $groups,
+            DateTimeNormalizer::FORMAT_KEY => 'U', // Unix timestamp
+        ]);
     }
 
     protected function success(array $data = [], int $status = Response::HTTP_OK): JsonResponse

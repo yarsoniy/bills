@@ -7,6 +7,7 @@ namespace App\Controller\ParticipantGroup;
 use App\Application\UseCase\ParticipantGroupService;
 use App\Controller\ParticipantGroup\Resource\ParticipantGroupResource;
 use App\Controller\ParticipantGroup\Resource\ParticipantResource;
+use App\Controller\ParticipantGroup\ResponseMapper\ParticipantGroupResponseMapper;
 use App\Controller\Shared\BaseController;
 use App\Domain\ParticipantGroup\Exception\ParticipantGroupNotFoundException;
 use App\Domain\ParticipantGroup\Model\ParticipantGroupId;
@@ -40,7 +41,8 @@ class ParticipantGroupController extends BaseController
     #[Route('/api/v1/participant_group/{groupId}', methods: 'GET')]
     public function get(
         $groupId,
-        ParticipantGroupService $participantGroupService
+        ParticipantGroupService $participantGroupService,
+        ParticipantGroupResponseMapper $responseMapper
     ) {
         $validationErrors = $this->validateUrlParams(
             ['groupId' => $groupId],
@@ -51,10 +53,7 @@ class ParticipantGroupController extends BaseController
         }
 
         $group = $participantGroupService->getGroup(new ParticipantGroupId($groupId));
-        $groupResource = new ParticipantGroupResource(
-            $group->getId()->id,
-            $group->getTitle()
-        );
+        $groupResource = $responseMapper->map($group);
 
         return $this->success($this->normalize($groupResource));
     }
