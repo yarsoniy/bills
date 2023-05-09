@@ -58,9 +58,7 @@ class DoctrineBillRepository extends ServiceEntityRepository implements BillRepo
 
     public function findByParticipantGroup(ParticipantGroupId $groupId): array
     {
-        $result = $this->findBy(['groupId' => $groupId]);
-
-        return $result ?: [];
+        return $this->findBy(['groupId' => $groupId]);
     }
 
     public function getByItemId(BillItemId $itemId): Bill
