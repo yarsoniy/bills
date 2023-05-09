@@ -8,14 +8,14 @@ use Symfony\Component\Validator\ConstraintViolationListInterface;
 
 class ResponseFormatter
 {
-    public function formatSuccess(?string $msg, array $data = []): array
+    public function formatSuccess(?string $msg, ?array $data = null): array
     {
         $response = [];
         $response['success'] = true;
         if ($msg) {
             $response['message'] = $msg;
         }
-        if ($data) {
+        if (null !== $data) {
             $response['data'] = $data;
         }
 

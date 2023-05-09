@@ -4,7 +4,10 @@ declare(strict_types=1);
 
 namespace App\Controller\ParticipantGroup;
 
+use App\Application\UseCase\BillService;
 use App\Application\UseCase\ParticipantGroupService;
+use App\Controller\Bill\Resource\BillResource;
+use App\Controller\Bill\ResponseMapper\BillResponseMapper;
 use App\Controller\ParticipantGroup\Resource\ParticipantGroupResource;
 use App\Controller\ParticipantGroup\Resource\ParticipantResource;
 use App\Controller\ParticipantGroup\ResponseMapper\ParticipantGroupResponseMapper;
@@ -52,7 +55,11 @@ class ParticipantGroupController extends BaseController
             return $this->errorValidationFailed($validationErrors);
         }
 
-        $group = $participantGroupService->getGroup(new ParticipantGroupId($groupId));
+        try {
+            $group = $participantGroupService->getGroup(new ParticipantGroupId($groupId));
+        } catch (ParticipantGroupNotFoundException $e) {
+            return $this->errorNotFound($e->getMessage());
+        }
         $groupResource = $responseMapper->map($group);
 
         return $this->success($this->normalize($groupResource));
@@ -89,5 +96,58 @@ class ParticipantGroupController extends BaseController
         }
 
         return $this->success(['id' => $participantId->id]);
+    }
+
+    #[Route('/api/v1/participant_group/{groupId}/bill', methods: 'POST')]
+    public function createBill(
+        $groupId,
+        Request $request,
+        BillService $billService
+    ) {
+        /** @var BillResource $dto */
+        if (!$dto = $this->denormalize($request, BillResource::class)) {
+            return $this->errorCantParseRequest();
+        }
+        $validationErrors = $this->validateUrlParams(
+            ['groupId' => $groupId],
+            ['groupId' => new Assert\Uuid()]
+        );
+        $validationErrors->addAll($this->validateObject($dto));
+
+        if ($validationErrors->count()) {
+            return $this->errorValidationFailed($validationErrors);
+        }
+
+        try {
+            $billId = $billService->createBill(new ParticipantGroupId($groupId), $dto->getTitle());
+        } catch (ParticipantGroupNotFoundException $e) {
+            return $this->errorNotFound($e->getMessage());
+        }
+
+        return $this->success(['id' => $billId->id]);
+    }
+
+    #[Route('/api/v1/participant_group/{groupId}/bill', methods: 'GET')]
+    public function getBillList(
+        $groupId,
+        BillService $billService,
+        BillResponseMapper $responseMapper
+    ) {
+        $validationErrors = $this->validateUrlParams(
+            ['groupId' => $groupId],
+            ['groupId' => new Assert\Uuid()]
+        );
+        if ($validationErrors->count()) {
+            return $this->errorValidationFailed($validationErrors);
+        }
+
+        try {
+            $bills = $billService->findByParticipantGroup(new ParticipantGroupId($groupId));
+        } catch (ParticipantGroupNotFoundException $e) {
+            return $this->errorBadRequest($e->getMessage());
+        }
+        $resources = $responseMapper->mapMany($bills);
+
+        return $this->success($this->normalize($resources));
     }
 }

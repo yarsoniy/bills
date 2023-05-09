@@ -8,7 +8,6 @@ use App\Domain\AccountingBook\Model\AccountingBook;
 use App\Domain\AccountingBook\Model\Record;
 use App\Domain\AccountingBook\Model\Transaction;
 use App\Domain\Bill\Model\Bill;
-use App\Domain\Bill\Model\BillId;
 use App\Domain\Bill\Model\BillItem;
 use App\Domain\Money\Model\MoneyBreakdown;
 use App\Tests\Helper\FixtureFactory\AccountingBookFixtureFactory;
@@ -48,9 +47,9 @@ class FixtureHelper extends Module
         return (new AccountingBookFixtureFactory())->createTransaction($a, $b, $amount);
     }
 
-    public function createBill(BillId $id = null): Bill
+    public function createBill(array $params = []): Bill
     {
-        return (new BillFixtureFactory())->createBill($id);
+        return (new BillFixtureFactory())->createBill($params);
     }
 
     public function createBillItem(array $params): BillItem

@@ -5,27 +5,16 @@ declare(strict_types=1);
 namespace App\Infrastructure\Doctrine\Type;
 
 use App\Domain\ParticipantGroup\Model\ParticipantGroupId;
-use Doctrine\DBAL\Platforms\AbstractPlatform;
-use Doctrine\DBAL\Types\GuidType;
 
-class ParticipantGroupIdType extends GuidType
+class ParticipantGroupIdType extends BaseGuidType
 {
     public function getName(): string
     {
         return 'ParticipantGroupId';
     }
 
-    public function convertToPHPValue($value, AbstractPlatform $platform): ?ParticipantGroupId
+    protected function getClass(): string
     {
-        return null === $value
-            ? null
-            : new ParticipantGroupId($value);
-    }
-
-    public function convertToDatabaseValue($value, AbstractPlatform $platform): string
-    {
-        return $value instanceof ParticipantGroupId
-            ? $value->id
-            : (string) $value;
+        return ParticipantGroupId::class;
     }
 }

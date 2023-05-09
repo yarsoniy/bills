@@ -10,24 +10,40 @@ use App\Domain\Bill\View\BillItemView;
 use App\Domain\DebtResolver\Service\DebtResolver;
 use App\Domain\Money\Model\Money;
 use App\Domain\Money\Model\MoneyBreakdown;
+use App\Domain\ParticipantGroup\Model\ParticipantGroupId;
+use App\Infrastructure\Doctrine\Repository\DoctrineBillRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\ORM\Mapping as ORM;
 
+#[ORM\Entity(repositoryClass: DoctrineBillRepository::class)]
+#[ORM\Table(name: 'bills')]
 class Bill
 {
+    #[ORM\Id]
+    #[ORM\Column(type: 'BillId')]
     private BillId $id;
 
+    #[ORM\Column(name: 'group_id', type: 'ParticipantGroupId')]
+    private ParticipantGroupId $groupId;
+
+    #[ORM\Column(type: 'string')]
     private string $title;
 
+    #[ORM\Column(name: 'created_at', type: 'datetime_immutable')]
     private \DateTimeImmutable $createdAt;
 
-    /** @var BillItem[] */
-    private array $items = [];
+    /** @var Collection<string, BillItem> */
+    private Collection $items;
 
     private MoneyBreakdown $participantDeposits;
 
-    public function __construct(BillId $id)
+    public function __construct(BillId $id, ParticipantGroupId $groupId)
     {
         $this->id = $id;
+        $this->groupId = $groupId;
         $this->createdAt = new \DateTimeImmutable();
+        $this->items = new ArrayCollection();
     }
 
     public function getId(): BillId
@@ -35,9 +51,19 @@ class Bill
         return $this->id;
     }
 
+    public function getTitle(): string
+    {
+        return $this->title;
+    }
+
     public function setTitle(string $title): void
     {
         $this->title = $title;
+    }
+
+    public function getCreatedAt(): \DateTimeImmutable
+    {
+        return $this->createdAt;
     }
 
     public function addItem(BillItem $item): void
@@ -60,7 +86,7 @@ class Bill
      */
     public function getItemsView(): array
     {
-        return array_map(fn (BillItem $i) => new BillItemView($i), $this->items);
+        return $this->items->map(fn (BillItem $i) => new BillItemView($i))->toArray();
     }
 
     public function setItemTitle(BillItemId $itemId, string $title): void

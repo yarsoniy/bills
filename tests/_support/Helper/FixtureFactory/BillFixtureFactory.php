@@ -10,14 +10,16 @@ use App\Domain\Bill\Model\BillItem;
 use App\Domain\Bill\Model\BillItemId;
 use App\Domain\Bill\Model\Payment;
 use App\Domain\Money\Model\Money;
+use App\Domain\ParticipantGroup\Model\ParticipantGroupId;
 
 class BillFixtureFactory
 {
-    public function createBill(BillId $id = null): Bill
+    public function createBill(array $params = []): Bill
     {
-        $id = $id ?? new BillId('test-bill');
+        $id = $params['id'] ?? new BillId('test-bill');
+        $groupId = $params['groupId'] ?? new ParticipantGroupId('test-group');
 
-        return new Bill($id);
+        return new Bill($id, $groupId);
     }
 
     public function createBillItem(array $params): BillItem

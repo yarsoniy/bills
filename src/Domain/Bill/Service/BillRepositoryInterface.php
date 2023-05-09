@@ -9,6 +9,7 @@ use App\Domain\Bill\Exception\BillNotFoundException;
 use App\Domain\Bill\Model\Bill;
 use App\Domain\Bill\Model\BillId;
 use App\Domain\Bill\Model\BillItemId;
+use App\Domain\ParticipantGroup\Model\ParticipantGroupId;
 
 interface BillRepositoryInterface
 {
@@ -24,6 +25,8 @@ interface BillRepositoryInterface
      * @throws BillNotFoundException
      */
     public function getById(BillId $id): Bill;
+
+    public function findByParticipantGroup(ParticipantGroupId $groupId): array;
 
     /**
      * @throws BillItemNotFoundException

@@ -4,12 +4,8 @@ declare(strict_types=1);
 
 namespace App\Domain\Bill\Model;
 
-readonly class BillId
-{
-    public string $id;
+use App\Domain\Shared\Model\StringId;
 
-    public function __construct(string $id)
-    {
-        $this->id = $id;
-    }
+readonly class BillId extends StringId
+{
 }

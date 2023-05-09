@@ -63,6 +63,11 @@ abstract class BaseController extends AbstractController
         return new JsonResponse($this->formatter->formatError($msg), $status);
     }
 
+    protected function errorBadRequest(string $msg, int $status = Response::HTTP_BAD_REQUEST): JsonResponse
+    {
+        return new JsonResponse($this->formatter->formatError($msg), $status);
+    }
+
     protected function errorValidationFailed(ConstraintViolationListInterface $validationErrors): JsonResponse
     {
         $httpCode = Response::HTTP_BAD_REQUEST;
