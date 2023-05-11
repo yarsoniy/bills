@@ -38,7 +38,7 @@ class ParticipantGroupService
     {
         $group = $this->repository->getById($groupId);
         $participantId = $this->repository->nextParticipantId();
-        $group->addParticipant(new Participant($participantId, $group));
+        $group->addParticipant(new Participant($participantId));
         $group->setParticipantName($participantId, $name);
         $this->persister->flush();
 

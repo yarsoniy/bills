@@ -6,42 +6,21 @@ namespace App\Domain\ParticipantGroup\Model;
 
 use App\Domain\ParticipantGroup\Exception\ParticipantNotFoundException;
 use App\Domain\ParticipantGroup\View\ParticipantView;
-use App\Infrastructure\Doctrine\Repository\DoctrineParticipantGroupRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
-use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: DoctrineParticipantGroupRepository::class)]
-#[ORM\Table(name: 'participant_groups')]
 class ParticipantGroup
 {
-    #[ORM\Id]
-    #[ORM\Column(type: 'ParticipantGroupId')]
     private ParticipantGroupId $id;
 
-    #[ORM\Column(type: 'string')]
     private string $title;
 
-    #[ORM\Column(name: 'created_at', type: 'datetime_immutable')]
     private \DateTimeImmutable $createdAt;
 
-    /**
-     * @var Collection<string, Participant>
-     */
-    #[ORM\OneToMany(
-        mappedBy: 'group',
-        targetEntity: Participant::class,
-        cascade: ['persist', 'remove'],
-        orphanRemoval: true,
-        indexBy: 'id'
-    )]
-    private Collection $participants;
+    private array $participants = [];
 
     public function __construct(ParticipantGroupId $id)
     {
         $this->id = $id;
         $this->createdAt = new \DateTimeImmutable();
-        $this->participants = new ArrayCollection();
     }
 
     public function getId(): ParticipantGroupId
@@ -96,6 +75,6 @@ class ParticipantGroup
      */
     public function getParticipantsView(): array
     {
-        return $this->participants->map(fn (Participant $p) => new ParticipantView($p))->toArray();
+        return array_map(fn (Participant $p) => new ParticipantView($p), $this->participants);
     }
 }
