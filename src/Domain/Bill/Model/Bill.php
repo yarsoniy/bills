@@ -14,28 +14,30 @@ use App\Domain\ParticipantGroup\Model\ParticipantGroupId;
 
 class Bill
 {
-    private BillId $id;
+    public function __construct(
+        private BillId $id,
 
-    private ParticipantGroupId $groupId;
+        private ParticipantGroupId $groupId,
 
-    private string $title;
+        private \DateTimeImmutable $createdAt = new \DateTimeImmutable(),
 
-    private \DateTimeImmutable $createdAt;
+        private string $title = 'No title',
 
-    private array $items = [];
+        /** @var BillItem[] */
+        private array $items = [],
 
-    private MoneyBreakdown $participantDeposits;
-
-    public function __construct(BillId $id, ParticipantGroupId $groupId)
-    {
-        $this->id = $id;
-        $this->groupId = $groupId;
-        $this->createdAt = new \DateTimeImmutable();
+        private MoneyBreakdown $participantDeposits = new MoneyBreakdown(),
+    ) {
     }
 
     public function getId(): BillId
     {
         return $this->id;
+    }
+
+    public function getGroupId(): ParticipantGroupId
+    {
+        return $this->groupId;
     }
 
     public function getTitle(): string

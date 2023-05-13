@@ -9,26 +9,28 @@ use App\Domain\Money\Model\MoneyBreakdown;
 
 class BillItem
 {
-    private BillItemId $id;
+    public function __construct(
+        private BillItemId $id,
 
-    private string $title;
+        private \DateTimeImmutable $createdAt = new \DateTimeImmutable(),
 
-    private Money $cost;
+        private string $title = 'No title',
 
-    /** @var Payment[] */
-    private array $payments;
+        private Money $cost = new Money(),
 
-    private \DateTimeImmutable $createdAt;
-
-    public function __construct(BillItemId $id)
-    {
-        $this->id = $id;
-        $this->createdAt = new \DateTimeImmutable();
+        /** @var Payment[] $payments */
+        private array $payments = [],
+    ) {
     }
 
     public function getId(): BillItemId
     {
         return $this->id;
+    }
+
+    public function getCreatedAt(): \DateTimeImmutable
+    {
+        return $this->createdAt;
     }
 
     public function getTitle(): string

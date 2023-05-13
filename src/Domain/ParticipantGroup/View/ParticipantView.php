@@ -25,4 +25,9 @@ class ParticipantView
     {
         return $this->participant->getName();
     }
+
+    public function getCreatedAt(): \DateTimeImmutable
+    {
+        return $this->participant->getCreatedAt();
+    }
 }

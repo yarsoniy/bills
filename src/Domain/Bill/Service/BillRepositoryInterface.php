@@ -17,7 +17,7 @@ interface BillRepositoryInterface
 
     public function nextItemId(): BillItemId;
 
-    public function add(Bill $bill): void;
+    public function save(Bill $bill): void;
 
     public function findById(BillId $id): ?Bill;
 

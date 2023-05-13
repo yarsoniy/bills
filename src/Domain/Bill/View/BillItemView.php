@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Domain\Bill\View;
 
 use App\Domain\Bill\Model\BillItem;
+use App\Domain\Bill\Model\BillItemId;
 use App\Domain\Bill\Model\Payment;
 use App\Domain\Money\Model\Money;
 
@@ -15,6 +16,16 @@ class BillItemView
     public function __construct(BillItem $billItem)
     {
         $this->billItem = $billItem;
+    }
+
+    public function getId(): BillItemId
+    {
+        return $this->billItem->getId();
+    }
+
+    public function getCreatedAt(): ?\DateTimeImmutable
+    {
+        return $this->billItem->getCreatedAt();
     }
 
     public function getTitle(): string

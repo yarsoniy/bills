@@ -18,6 +18,11 @@ readonly class MoneyBreakdown
         $this->items = $items;
     }
 
+    public function getItems(): array
+    {
+        return $this->items;
+    }
+
     public function get(string $index): Money
     {
         return $this->items[$index] ?? new Money();

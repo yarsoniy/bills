@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Application\UseCase;
 
-use App\Application\Service\PersisterInterface;
 use App\Domain\ParticipantGroup\Model\Participant;
 use App\Domain\ParticipantGroup\Model\ParticipantGroup;
 use App\Domain\ParticipantGroup\Model\ParticipantGroupId;
@@ -14,7 +13,6 @@ use App\Domain\ParticipantGroup\Service\ParticipantGroupRepositoryInterface;
 class ParticipantGroupService
 {
     public function __construct(
-        readonly private PersisterInterface $persister,
         readonly private ParticipantGroupRepositoryInterface $repository
     ) {
     }
@@ -23,8 +21,7 @@ class ParticipantGroupService
     {
         $group = new ParticipantGroup($this->repository->nextId());
         $group->setTitle($title);
-        $this->repository->add($group);
-        $this->persister->flush();
+        $this->repository->save($group);
 
         return $group->getId();
     }
@@ -40,7 +37,8 @@ class ParticipantGroupService
         $participantId = $this->repository->nextParticipantId();
         $group->addParticipant(new Participant($participantId));
         $group->setParticipantName($participantId, $name);
-        $this->persister->flush();
+
+        $this->repository->save($group);
 
         return $participantId;
     }

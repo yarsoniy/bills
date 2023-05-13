@@ -35,7 +35,8 @@ abstract class BaseController extends AbstractController
                 'json',
                 [
                     'groups' => $groups,
-                    DateTimeNormalizer::FORMAT_KEY => 'U', // Unix timestamp
+                    DateTimeNormalizer::FORMAT_KEY => 'Y-m-d H:i:s',
+                    DateTimeNormalizer::TIMEZONE_KEY => 'UTC',
                 ]
             );
         } catch (UnexpectedValueException|JsonException $e) {
@@ -49,7 +50,8 @@ abstract class BaseController extends AbstractController
     {
         return $this->serializer->normalize($dto, 'json', [
             'groups' => $groups,
-            DateTimeNormalizer::FORMAT_KEY => 'U', // Unix timestamp
+            DateTimeNormalizer::FORMAT_KEY => 'Y-m-d H:i:s',
+            DateTimeNormalizer::TIMEZONE_KEY => 'UTC',
         ]);
     }
 

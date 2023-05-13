@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Application\UseCase;
 
-use App\Application\Service\PersisterInterface;
 use App\Domain\Bill\Model\Bill;
 use App\Domain\Bill\Model\BillId;
 use App\Domain\Bill\Service\BillRepositoryInterface;
@@ -18,8 +17,7 @@ class BillService
 {
     public function __construct(
         readonly private BillRepositoryInterface $billRepository,
-        readonly private ParticipantGroupRepositoryInterface $participantGroupRepository,
-        readonly private PersisterInterface $persister
+        readonly private ParticipantGroupRepositoryInterface $participantGroupRepository
     ) {
     }
 
@@ -32,8 +30,7 @@ class BillService
         $id = $this->billRepository->nextId();
         $bill = new Bill($id, $groupId);
         $bill->setTitle($title);
-        $this->billRepository->add($bill);
-        $this->persister->flush();
+        $this->billRepository->save($bill);
 
         return $bill->getId();
     }

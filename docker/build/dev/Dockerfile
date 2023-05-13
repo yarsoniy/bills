@@ -9,6 +9,9 @@ RUN apt-get update && \
     unzip \
     libzip-dev \
     libpq-dev \
+    libcurl4-openssl-dev \
+    pkg-config \
+    libssl-dev \
     && rm -rf /var/lib/apt/lists/*
 
 RUN docker-php-ext-install \

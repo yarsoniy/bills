@@ -15,7 +15,7 @@ interface ParticipantGroupRepositoryInterface
 
     public function nextParticipantId(): ParticipantId;
 
-    public function add(ParticipantGroup $group): void;
+    public function save(ParticipantGroup $group): void;
 
     public function findById(ParticipantGroupId $id): ?ParticipantGroup;
 

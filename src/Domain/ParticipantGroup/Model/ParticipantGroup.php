@@ -9,18 +9,16 @@ use App\Domain\ParticipantGroup\View\ParticipantView;
 
 class ParticipantGroup
 {
-    private ParticipantGroupId $id;
+    public function __construct(
+        private ParticipantGroupId $id,
 
-    private string $title;
+        private string $title = 'No title',
 
-    private \DateTimeImmutable $createdAt;
+        private \DateTimeImmutable $createdAt = new \DateTimeImmutable(),
 
-    private array $participants = [];
-
-    public function __construct(ParticipantGroupId $id)
-    {
-        $this->id = $id;
-        $this->createdAt = new \DateTimeImmutable();
+        /** @var Participant[] $participants */
+        private array $participants = []
+    ) {
     }
 
     public function getId(): ParticipantGroupId
@@ -45,12 +43,6 @@ class ParticipantGroup
 
     public function addParticipant(Participant $participant): void
     {
-        $thisGroupId = $this->getId();
-        $participantGroupId = $participant->getGroup()->getId();
-        if (!$thisGroupId->equals($participantGroupId)) {
-            $msg = "Can't add Participant to Group. Ids don't match: '$thisGroupId' '$participantGroupId'";
-            throw new \LogicException($msg);
-        }
         $this->participants[$participant->getId()->id] = $participant;
     }
 

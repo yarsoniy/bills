@@ -6,26 +6,18 @@ namespace App\Domain\ParticipantGroup\Model;
 
 class Participant
 {
-    private ParticipantId $id;
+    public function __construct(
+        private ParticipantId $id,
 
-    private string $name;
+        private string $name = 'No name',
 
-    private \DateTimeImmutable $createdAt;
-
-    public function __construct(ParticipantId $id)
-    {
-        $this->id = $id;
-        $this->createdAt = new \DateTimeImmutable();
+        private \DateTimeImmutable $createdAt = new \DateTimeImmutable()
+    ) {
     }
 
     public function getId(): ParticipantId
     {
         return $this->id;
-    }
-
-    public function getGroup(): ParticipantGroup
-    {
-        return $this->group;
     }
 
     public function getName(): string
