@@ -6,6 +6,7 @@ namespace App\Infrastructure\Mongo\Mapper\Bill;
 
 use App\Domain\Bill\Model\Bill;
 use App\Domain\Bill\Model\BillId;
+use App\Domain\Money\Model\MoneyBreakdown;
 use App\Domain\ParticipantGroup\Model\ParticipantGroupId;
 use App\Infrastructure\Mongo\Mapper\CollectionMapperTrait;
 use App\Infrastructure\Mongo\Mapper\DateTime\DateTimeMapper;
@@ -48,10 +49,10 @@ class BillMapper
         return new Bill(
             new BillId($bson['_id']),
             new ParticipantGroupId($bson['groupId']),
-            $this->dateTimeMapper->fromBson($bson['createdAt'] ?? null),
-            $bson['title'] ?? null,
+            $this->dateTimeMapper->fromBson($bson['createdAt']),
+            $bson['title'],
             $this->billItemMapper->assocFromBson($bson['items'] ?? new BSONDocument()),
-            $this->moneyBreakdownMapper->fromBson($bson['participantDeposits'] ?? null)
+            $this->moneyBreakdownMapper->fromBson($bson['participantDeposits'] ?? null) ?? new MoneyBreakdown()
         );
     }
 }
