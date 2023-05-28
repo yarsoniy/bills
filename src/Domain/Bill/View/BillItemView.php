@@ -8,6 +8,7 @@ use App\Domain\Bill\Model\BillItem;
 use App\Domain\Bill\Model\BillItemId;
 use App\Domain\Bill\Model\Payment;
 use App\Domain\Money\Model\Money;
+use App\Domain\Money\Model\MoneyBreakdown;
 
 class BillItemView
 {
@@ -44,5 +45,10 @@ class BillItemView
     public function getPayments(): array
     {
         return $this->billItem->getPayments();
+    }
+
+    public function calculateBreakdown(): MoneyBreakdown
+    {
+        return $this->billItem->calculateBreakdown();
     }
 }

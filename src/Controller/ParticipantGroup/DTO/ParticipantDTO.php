@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace App\Controller\ParticipantGroup\Resource;
+namespace App\Controller\ParticipantGroup\DTO;
 
 use Symfony\Component\Validator\Constraints as Assert;
 
-class ParticipantResource
+class ParticipantDTO
 {
     public function __construct(
         private ?string $id,

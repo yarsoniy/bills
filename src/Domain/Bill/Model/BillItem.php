@@ -6,6 +6,7 @@ namespace App\Domain\Bill\Model;
 
 use App\Domain\Money\Model\Money;
 use App\Domain\Money\Model\MoneyBreakdown;
+use App\Domain\ParticipantGroup\Model\ParticipantId;
 
 class BillItem
 {
@@ -61,6 +62,18 @@ class BillItem
     public function addPayment(Payment $payment): void
     {
         $this->payments[] = $payment;
+    }
+
+    /**
+     * @param ParticipantId[] $participantIds
+     */
+    public function setPaymentsEqually(array $participantIds): void
+    {
+        // Split equally for all participants
+        $this->payments = array_map(
+            fn (ParticipantId $p) => new Payment($p, $p),
+            $participantIds
+        );
     }
 
     /**

@@ -10,6 +10,7 @@ use App\Domain\Bill\View\BillItemView;
 use App\Domain\DebtResolver\Service\DebtResolver;
 use App\Domain\Money\Model\Money;
 use App\Domain\Money\Model\MoneyBreakdown;
+use App\Domain\ParticipantGroup\Model\ParticipantGroup;
 use App\Domain\ParticipantGroup\Model\ParticipantGroupId;
 
 class Bill
@@ -55,6 +56,14 @@ class Bill
         return $this->createdAt;
     }
 
+    public function createItem(BillItemId $newId, string $title, Money $cost, ParticipantGroup $group): BillItem
+    {
+        $item = new BillItem($newId, new \DateTimeImmutable(), $title, $cost);
+        $item->setPaymentsEqually(array_values($group->getParticipantIds()));
+
+        return $item;
+    }
+
     public function addItem(BillItem $item): void
     {
         $this->items[$item->getId()->id] = $item;
@@ -68,6 +77,11 @@ class Bill
         }
 
         return $item;
+    }
+
+    public function getItemView(BillItemId $itemId): BillItemView
+    {
+        return new BillItemView($this->getItem($itemId));
     }
 
     /**
@@ -137,6 +151,9 @@ class Bill
     public function calculateTotalBreakdown(): MoneyBreakdown
     {
         $total = $this->calculateTotalCost();
+        if (0 == $total->value) {
+            return new MoneyBreakdown();
+        }
 
         return $this->mergeItemBreakdowns()->roundWithCorrection($total);
     }

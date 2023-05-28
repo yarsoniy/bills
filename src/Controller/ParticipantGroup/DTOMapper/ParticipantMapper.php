@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace App\Controller\ParticipantGroup\ResponseMapper;
+namespace App\Controller\ParticipantGroup\DTOMapper;
 
-use App\Controller\ParticipantGroup\Resource\ParticipantResource;
+use App\Controller\ParticipantGroup\DTO\ParticipantDTO;
 use App\Domain\ParticipantGroup\View\ParticipantView;
 
-class ParticipantResponseMapper
+class ParticipantMapper
 {
-    public function map(ParticipantView $participant): ParticipantResource
+    public function map(ParticipantView $participant): ParticipantDTO
     {
-        return new ParticipantResource(
+        return new ParticipantDTO(
             $participant->getId()->id,
             $participant->getName(),
         );
@@ -20,7 +20,7 @@ class ParticipantResponseMapper
     /**
      * @param ParticipantView[] $participants
      *
-     * @return ParticipantResource[]
+     * @return ParticipantDTO[]
      */
     public function mapMany(array $participants): array
     {

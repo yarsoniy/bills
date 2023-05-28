@@ -63,6 +63,14 @@ class ParticipantGroup
     }
 
     /**
+     * @return ParticipantId[]
+     */
+    public function getParticipantIds(): array
+    {
+        return array_map(fn (Participant $p) => $p->getId(), $this->participants);
+    }
+
+    /**
      * @return ParticipantView[]
      */
     public function getParticipantsView(): array

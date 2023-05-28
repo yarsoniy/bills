@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace App\Controller\ParticipantGroup\Resource;
+namespace App\Controller\ParticipantGroup\DTO;
 
 use Symfony\Component\Validator\Constraints as Assert;
 
-class ParticipantGroupResource
+class ParticipantGroupDTO
 {
     public function __construct(
         private ?string $id,
@@ -16,7 +16,7 @@ class ParticipantGroupResource
 
         private ?\DateTimeImmutable $createdAt,
 
-        /** @var ParticipantResource[] */
+        /** @var ParticipantDTO[] */
         private ?array $participants
     ) {
     }
@@ -37,7 +37,7 @@ class ParticipantGroupResource
     }
 
     /**
-     * @return ParticipantResource[]
+     * @return ParticipantDTO[]
      */
     public function getParticipants(): array
     {

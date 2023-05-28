@@ -6,11 +6,11 @@ namespace App\Controller\ParticipantGroup;
 
 use App\Application\UseCase\BillService;
 use App\Application\UseCase\ParticipantGroupService;
-use App\Controller\Bill\Resource\BillResource;
-use App\Controller\Bill\ResponseMapper\BillResponseMapper;
-use App\Controller\ParticipantGroup\Resource\ParticipantGroupResource;
-use App\Controller\ParticipantGroup\Resource\ParticipantResource;
-use App\Controller\ParticipantGroup\ResponseMapper\ParticipantGroupResponseMapper;
+use App\Controller\Bill\DTO\BillDTO;
+use App\Controller\Bill\DTOMapper\BillMapper;
+use App\Controller\ParticipantGroup\DTO\ParticipantDTO;
+use App\Controller\ParticipantGroup\DTO\ParticipantGroupDTO;
+use App\Controller\ParticipantGroup\DTOMapper\ParticipantGroupMapper;
 use App\Controller\Shared\BaseController;
 use App\Domain\ParticipantGroup\Exception\ParticipantGroupNotFoundException;
 use App\Domain\ParticipantGroup\Model\ParticipantGroupId;
@@ -26,8 +26,8 @@ class ParticipantGroupController extends BaseController
         Request $request,
         ParticipantGroupService $participantGroupService
     ): JsonResponse {
-        /** @var ParticipantGroupResource $dto */
-        if (!$dto = $this->denormalize($request, ParticipantGroupResource::class)) {
+        /** @var ParticipantGroupDTO $dto */
+        if (!$dto = $this->denormalize($request, ParticipantGroupDTO::class)) {
             return $this->errorCantParseRequest();
         }
 
@@ -45,7 +45,7 @@ class ParticipantGroupController extends BaseController
     public function get(
         $groupId,
         ParticipantGroupService $participantGroupService,
-        ParticipantGroupResponseMapper $responseMapper
+        ParticipantGroupMapper $responseMapper
     ) {
         $validationErrors = $this->validateUrlParams(
             ['groupId' => $groupId],
@@ -60,7 +60,7 @@ class ParticipantGroupController extends BaseController
         } catch (ParticipantGroupNotFoundException $e) {
             return $this->errorNotFound($e->getMessage());
         }
-        $groupResource = $responseMapper->map($group);
+        $groupResource = $responseMapper->toDTO($group);
 
         return $this->success($this->normalize($groupResource));
     }
@@ -71,8 +71,8 @@ class ParticipantGroupController extends BaseController
         Request $request,
         ParticipantGroupService $participantGroupService
     ): JsonResponse {
-        /** @var ParticipantResource $dto */
-        if (!$dto = $this->denormalize($request, ParticipantResource::class)) {
+        /** @var ParticipantDTO $dto */
+        if (!$dto = $this->denormalize($request, ParticipantDTO::class)) {
             return $this->errorCantParseRequest();
         }
 
@@ -104,8 +104,8 @@ class ParticipantGroupController extends BaseController
         Request $request,
         BillService $billService
     ) {
-        /** @var BillResource $dto */
-        if (!$dto = $this->denormalize($request, BillResource::class)) {
+        /** @var BillDTO $dto */
+        if (!$dto = $this->denormalize($request, BillDTO::class)) {
             return $this->errorCantParseRequest();
         }
         $validationErrors = $this->validateUrlParams(
@@ -119,7 +119,7 @@ class ParticipantGroupController extends BaseController
         }
 
         try {
-            $billId = $billService->createBill(new ParticipantGroupId($groupId), $dto->getTitle());
+            $billId = $billService->createBill(new ParticipantGroupId($groupId), $dto->title);
         } catch (ParticipantGroupNotFoundException $e) {
             return $this->errorNotFound($e->getMessage());
         }
@@ -131,7 +131,7 @@ class ParticipantGroupController extends BaseController
     public function getBillList(
         $groupId,
         BillService $billService,
-        BillResponseMapper $responseMapper
+        BillMapper $responseMapper
     ) {
         $validationErrors = $this->validateUrlParams(
             ['groupId' => $groupId],
@@ -146,7 +146,7 @@ class ParticipantGroupController extends BaseController
         } catch (ParticipantGroupNotFoundException $e) {
             return $this->errorBadRequest($e->getMessage());
         }
-        $resources = $responseMapper->mapMany($bills);
+        $resources = $responseMapper->manyToDTO($bills);
 
         return $this->success($this->normalize($resources));
     }
