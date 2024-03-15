@@ -60,6 +60,15 @@ class MongoParticipantGroupRepository implements ParticipantGroupRepositoryInter
         return $this->mapper->fromBson($bson);
     }
 
+    public function getAll(): array
+    {
+        $bsonItems = $this->getCollection()->find([], [
+            'sort' => ['createdAt' => -1],
+        ])->toArray();
+
+        return array_map(fn (BSONDocument $bson) => $this->mapper->fromBson($bson), $bsonItems);
+    }
+
     public function getById(ParticipantGroupId $id): ParticipantGroup
     {
         $result = $this->findById($id);

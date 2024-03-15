@@ -20,6 +20,11 @@ interface ParticipantGroupRepositoryInterface
     public function findById(ParticipantGroupId $id): ?ParticipantGroup;
 
     /**
+     * @return ParticipantGroup[]
+     */
+    public function getAll(): array;
+
+    /**
      * @throws ParticipantGroupNotFoundException
      */
     public function getById(ParticipantGroupId $id): ParticipantGroup;

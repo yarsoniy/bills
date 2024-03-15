@@ -17,6 +17,11 @@ class ParticipantGroupService
     ) {
     }
 
+    public function getGroups(): array
+    {
+        return $this->repository->getAll();
+    }
+
     public function createGroup(string $title): ParticipantGroupId
     {
         $group = new ParticipantGroup($this->repository->nextId());

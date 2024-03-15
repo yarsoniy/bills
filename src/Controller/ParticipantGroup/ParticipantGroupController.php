@@ -21,6 +21,17 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 class ParticipantGroupController extends BaseController
 {
+    #[Route('/api/v1/participant_group', methods: 'GET')]
+    public function getGroups(
+        ParticipantGroupService $participantGroupService,
+        ParticipantGroupMapper $responseMapper
+    ): JsonResponse {
+        $groups = $participantGroupService->getGroups();
+        $DTOs = $responseMapper->manyToDTO($groups);
+
+        return $this->success($this->normalize($DTOs));
+    }
+
     #[Route('/api/v1/participant_group', methods: 'POST')]
     public function create(
         Request $request,
