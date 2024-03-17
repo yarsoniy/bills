@@ -89,6 +89,9 @@ readonly class MoneyBreakdown
      */
     public function roundWithCorrection(Money $desiredTotal): self
     {
+        if (!$this->items) {
+            return $this;
+        }
         $roundedBreakdown = $this->round();
         $difference = $desiredTotal->sub($roundedBreakdown->sum())->round();
 

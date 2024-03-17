@@ -86,6 +86,10 @@ class BillItem
 
     public function calculateBreakdown(): MoneyBreakdown
     {
+        if (!$this->payments) {
+            return new MoneyBreakdown();
+        }
+
         // Find how many Payers will pay for each User share
         // If the number is 1 than the share is paid by 1 payer
         // If the number is 3 than the share is divided and paid by 3 payers
