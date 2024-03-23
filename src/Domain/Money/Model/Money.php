@@ -8,7 +8,7 @@ readonly class Money
 {
     private const ROUND_PRECISION = 2;
 
-    public float $value;
+    public readonly float $value;
 
     public function __construct(float $value = 0)
     {

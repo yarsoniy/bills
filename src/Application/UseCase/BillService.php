@@ -53,6 +53,7 @@ class BillService
     {
         $bill = $this->billRepository->getById($id);
         $bill->setParticipantDeposits($deposits);
+        $this->billRepository->save($bill);
     }
 
     public function calculateTotalCost(BillId $id): Money

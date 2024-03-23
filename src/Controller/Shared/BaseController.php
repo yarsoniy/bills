@@ -12,6 +12,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Serializer\Exception\UnexpectedValueException;
 use Symfony\Component\Serializer\Normalizer\AbstractObjectNormalizer;
 use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
+use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -54,6 +55,7 @@ abstract class BaseController extends AbstractController
             DateTimeNormalizer::FORMAT_KEY => 'Y-m-d H:i:s',
             DateTimeNormalizer::TIMEZONE_KEY => 'UTC',
             AbstractObjectNormalizer::SKIP_NULL_VALUES => true,
+            ObjectNormalizer::PRESERVE_EMPTY_OBJECTS => true,
         ]);
     }
 

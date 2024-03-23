@@ -6,14 +6,12 @@ namespace App\Controller\Bill\DTOMapper;
 
 use App\Controller\Bill\DTO\BillDTO;
 use App\Controller\BillItem\DTOMapper\BillItemMapper;
-use App\Controller\Money\DTOMapper\MoneyBreakdownMapper;
 use App\Domain\Bill\Model\Bill;
 
 class BillMapper
 {
     public function __construct(
-        readonly private BillItemMapper $itemResponseMapper,
-        readonly private MoneyBreakdownMapper $breakdownMapper
+        readonly private BillItemMapper $itemResponseMapper
     ) {
     }
 
@@ -24,8 +22,7 @@ class BillMapper
             $bill->getTitle(),
             $bill->getCreatedAt(),
             $this->itemResponseMapper->manyToDTOPreview($bill->getItemsView()),
-            $bill->calculateTotalCost()->value,
-            $this->breakdownMapper->toDTO($bill->calculateTotalBreakdown())
+            $bill->calculateTotalCost()->value
         );
     }
 

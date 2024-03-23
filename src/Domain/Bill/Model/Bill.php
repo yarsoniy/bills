@@ -169,7 +169,7 @@ class Bill
         return $totalBreakdown;
     }
 
-    private function calculateBalance(): MoneyBreakdown
+    public function calculateBalance(): MoneyBreakdown
     {
         $totalCostBreakdown = $this->calculateTotalBreakdown();
         $deposits = $this->participantDeposits;
