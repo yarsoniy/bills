@@ -6,7 +6,7 @@ namespace App\Domain\Bill\View;
 
 use App\Domain\Bill\Model\BillItem;
 use App\Domain\Bill\Model\BillItemId;
-use App\Domain\Bill\Model\Payment;
+use App\Domain\Bill\Model\SplitAgreement;
 use App\Domain\Money\Model\Money;
 use App\Domain\Money\Model\MoneyBreakdown;
 
@@ -39,12 +39,9 @@ class BillItemView
         return $this->billItem->getCost();
     }
 
-    /**
-     * @return Payment[]
-     */
-    public function getPayments(): array
+    public function getAgreement(): SplitAgreement
     {
-        return $this->billItem->getPayments();
+        return $this->billItem->getAgreement();
     }
 
     public function calculateBreakdown(): MoneyBreakdown

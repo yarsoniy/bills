@@ -6,11 +6,11 @@ namespace App\Infrastructure\Mongo\Mapper\Bill;
 
 use App\Domain\Bill\Model\BillItem;
 use App\Domain\Bill\Model\BillItemId;
+use App\Domain\Bill\Model\SplitAgreement;
 use App\Domain\Bill\View\BillItemView;
 use App\Infrastructure\Mongo\Mapper\CollectionMapperTrait;
 use App\Infrastructure\Mongo\Mapper\DateTime\DateTimeMapper;
 use App\Infrastructure\Mongo\Mapper\Money\MoneyMapper;
-use MongoDB\Model\BSONArray;
 use MongoDB\Model\BSONDocument;
 
 class BillItemMapper
@@ -20,7 +20,7 @@ class BillItemMapper
     public function __construct(
         readonly private DateTimeMapper $dateTimeMapper,
         readonly private MoneyMapper $moneyMapper,
-        readonly private PaymentMapper $paymentMapper
+        readonly private SplitRuleMapper $splitRuleMapper,
     ) {
     }
 
@@ -35,7 +35,9 @@ class BillItemMapper
             'createdAt' => $this->dateTimeMapper->toBson($object->getCreatedAt()),
             'title' => $object->getTitle(),
             'cost' => $this->moneyMapper->toBson($object->getCost()),
-            'payments' => $this->paymentMapper->arrayToBson($object->getPayments()),
+            'agreement' => [
+                'rules' => $this->splitRuleMapper->arrayToBson($object->getAgreement()->rules),
+            ],
         ]);
     }
 
@@ -50,7 +52,9 @@ class BillItemMapper
             $this->dateTimeMapper->fromBson($bson['createdAt'] ?? null),
             $bson['title'] ?? null,
             $this->moneyMapper->fromBson($bson['cost'] ?? null),
-            $this->paymentMapper->arrayFromBson($bson['payments'] ?? new BSONArray())
+            new SplitAgreement(
+                $this->splitRuleMapper->arrayFromBson($bson['agreement']['rules'] ?? [])
+            )
         );
     }
 }

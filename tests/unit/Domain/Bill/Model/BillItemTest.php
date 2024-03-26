@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Tests\unit\Domain\Bill\Model;
 
+use App\Domain\Bill\Model\SplitAgreement;
+use App\Domain\Bill\Model\SplitRule;
 use App\Domain\ParticipantGroup\Model\ParticipantId;
 use App\Tests\UnitTester;
 use Codeception\Test\Unit;
@@ -22,12 +24,12 @@ class BillItemTest extends Unit
         $billItem = $this->tester->createBillItem([
             'id' => 'pizza',
             'cost' => 400,
-            'payments' => [
-                [$pA, $pA],
-                [$pB, $pB],
-                [$pC, $pC],
-                [$pD, $pD],
-            ],
+            'agreement' => new SplitAgreement([
+                new SplitRule([$pA], [$pA]),
+                new SplitRule([$pB], [$pB]),
+                new SplitRule([$pC], [$pC]),
+                new SplitRule([$pD], [$pD]),
+            ]),
         ]);
 
         $expected = $this->tester->createMoneyBreakdown([
@@ -51,14 +53,12 @@ class BillItemTest extends Unit
         $billItem = $this->tester->createBillItem([
             'id' => 'pizza',
             'cost' => 300,
-            'payments' => [
-                [$pA, $pA],
-                [$pB, $pB],
-                [$pC, $pC],
-                [$pA, $pD],
-                [$pB, $pD],
-                [$pC, $pD],
-            ],
+            'agreement' => new SplitAgreement([
+                new SplitRule([$pA], [$pA]),
+                new SplitRule([$pB], [$pB]),
+                new SplitRule([$pC], [$pC]),
+                new SplitRule([$pA, $pB, $pC], [$pD]),
+            ]),
         ]);
 
         $expected = $this->tester->createMoneyBreakdown([
@@ -81,13 +81,11 @@ class BillItemTest extends Unit
         $billItem = $this->tester->createBillItem([
             'id' => 'pizza',
             'cost' => 300,
-            'payments' => [
-                [$pB, $pB],
-                [$pC, $pC],
-                [$pA, $pD],
-                [$pB, $pD],
-                [$pC, $pD],
-            ],
+            'agreement' => new SplitAgreement([
+                new SplitRule([$pB], [$pB]),
+                new SplitRule([$pC], [$pC]),
+                new SplitRule([$pA, $pB, $pC], [$pD]),
+            ]),
         ]);
 
         $expected = $this->tester->createMoneyBreakdown([
@@ -110,12 +108,11 @@ class BillItemTest extends Unit
         $billItem = $this->tester->createBillItem([
             'id' => 'pizza',
             'cost' => 400,
-            'payments' => [
-                [$pA, $pA],
-                [$pB, $pB],
-                [$pC, $pC],
-                [$pC, $pD],
-            ],
+            'agreement' => new SplitAgreement([
+                new SplitRule([$pA], [$pA]),
+                new SplitRule([$pB], [$pB]),
+                new SplitRule([$pC], [$pC, $pD]),
+            ]),
         ]);
 
         $expected = $this->tester->createMoneyBreakdown([

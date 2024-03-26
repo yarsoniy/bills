@@ -7,12 +7,13 @@ namespace App\Controller\BillItem;
 use App\Application\UseCase\BillItemService;
 use App\Controller\BillItem\DTO\BillItemDTO;
 use App\Controller\BillItem\DTOMapper\BillItemMapper;
-use App\Controller\BillItem\DTOMapper\PaymentMapper;
+use App\Controller\BillItem\DTOMapper\SplitAgreementMapper;
 use App\Controller\Shared\BaseController;
 use App\Domain\Bill\Exception\BillItemNotFoundException;
 use App\Domain\Bill\Exception\BillNotFoundException;
 use App\Domain\Bill\Model\BillId;
 use App\Domain\Bill\Model\BillItemId;
+use App\Domain\Bill\Model\SplitAgreement;
 use App\Domain\Money\Model\Money;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -51,8 +52,8 @@ class BillItemController extends BaseController
         $billId,
         $itemId,
         Request $request,
-        PaymentMapper $paymentMapper,
         BillItemService $billItemService,
+        SplitAgreementMapper $agreementMapper
     ) {
         $validationErrors = $this->validateUrlParams(
             ['billId' => $billId, 'itemId' => $itemId],
@@ -73,7 +74,7 @@ class BillItemController extends BaseController
                 new BillItemId($itemId),
                 $dto->title,
                 new Money($dto->cost ?? 0.0),
-                $paymentMapper->manyFromDTO($dto->payments)
+                $agreementMapper->fromDTO($dto->agreement) ?? new SplitAgreement([])
             );
         } catch (BillNotFoundException|BillItemNotFoundException $e) {
             $this->errorNotFound($e->getMessage());

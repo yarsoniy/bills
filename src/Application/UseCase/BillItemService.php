@@ -6,7 +6,7 @@ namespace App\Application\UseCase;
 
 use App\Domain\Bill\Model\BillId;
 use App\Domain\Bill\Model\BillItemId;
-use App\Domain\Bill\Model\Payment;
+use App\Domain\Bill\Model\SplitAgreement;
 use App\Domain\Bill\Service\BillRepositoryInterface;
 use App\Domain\Bill\View\BillItemView;
 use App\Domain\Money\Model\Money;
@@ -42,20 +42,17 @@ class BillItemService
         return $itemId;
     }
 
-    /**
-     * @param Payment[] $payments
-     */
     public function editItem(
         BillId $billId,
         BillItemId $itemId,
         string $title,
         Money $cost,
-        array $payments
+        SplitAgreement $agreement,
     ): void {
         $bill = $this->billRepository->getById($billId);
         $bill->setItemTitle($itemId, $title);
         $bill->setItemCost($itemId, $cost);
-        $bill->setItemPayments($itemId, $payments);
+        $bill->setItemAgreement($itemId, $agreement);
         $this->billRepository->save($bill);
     }
 

@@ -6,6 +6,26 @@ namespace App\Domain\Shared\Model;
 
 abstract readonly class StringId
 {
+    /**
+     * @param string[] $ids
+     *
+     * @return static[]
+     */
+    public static function fromArray(array $ids): array
+    {
+        return array_map(fn ($id) => new static($id), $ids);
+    }
+
+    /**
+     * @param static[] $ids
+     *
+     * @return string[]
+     */
+    public static function toArray(array $ids): array
+    {
+        return array_map(fn ($id) => $id->id, $ids);
+    }
+
     public function __construct(
         public string $id
     ) {

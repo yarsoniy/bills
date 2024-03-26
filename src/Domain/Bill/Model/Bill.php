@@ -59,7 +59,8 @@ class Bill
     public function createItem(BillItemId $newId, string $title, Money $cost, ParticipantGroup $group): BillItem
     {
         $item = new BillItem($newId, new \DateTimeImmutable(), $title, $cost);
-        $item->setPaymentsEqually(array_values($group->getParticipantIds()));
+        $participantIds = array_values($group->getParticipantIds());
+        $item->setAgreement(SplitAgreement::createEqual($participantIds));
 
         return $item;
     }
@@ -104,16 +105,10 @@ class Bill
         $item->setCost($cost);
     }
 
-    /**
-     * @param Payment[] $payments
-     */
-    public function setItemPayments(BillItemId $itemId, array $payments): void
+    public function setItemAgreement(BillItemId $itemId, SplitAgreement $agreement): void
     {
         $item = $this->getItem($itemId);
-        $item->clearPayments();
-        foreach ($payments as $payment) {
-            $item->addPayment($payment);
-        }
+        $item->setAgreement($agreement);
     }
 
     public function getParticipantDeposits(): MoneyBreakdown

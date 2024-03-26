@@ -11,8 +11,8 @@ use App\Domain\Bill\View\BillItemView;
 class BillItemMapper
 {
     public function __construct(
-        readonly private PaymentMapper $paymentMapper,
-        readonly private MoneyBreakdownMapper $breakdownMapper
+        readonly private MoneyBreakdownMapper $breakdownMapper,
+        readonly private SplitAgreementMapper $agreementMapper,
     ) {
     }
 
@@ -23,8 +23,8 @@ class BillItemMapper
             $item->getTitle(),
             $item->getCreatedAt(),
             $item->getCost()->round()->value,
-            $this->paymentMapper->manyToDTO($item->getPayments()) ?: null,
-            $this->breakdownMapper->toDTO($item->calculateBreakdown()->round())
+            $this->breakdownMapper->toDTO($item->calculateBreakdown()->round()),
+            $this->agreementMapper->toDTO($item->getAgreement())
         );
     }
 

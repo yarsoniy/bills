@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Tests\unit\Domain\Bill\Model;
 
+use App\Domain\Bill\Model\SplitAgreement;
+use App\Domain\Bill\Model\SplitRule;
 use App\Domain\Money\Model\Money;
 use App\Domain\ParticipantGroup\Model\ParticipantId;
 use App\Tests\UnitTester;
@@ -24,49 +26,44 @@ class BillTest extends Unit
         $item1 = $this->tester->createBillItem([
             'id' => 'beer',
             'cost' => 400,
-            'payments' => [
-                [$pA, $pA],
-                [$pB, $pB],
-                [$pC, $pC],
-                [$pD, $pD],
-            ],
+            'agreement' => new SplitAgreement([
+                new SplitRule([$pA], [$pA]),
+                new SplitRule([$pB], [$pB]),
+                new SplitRule([$pC], [$pC]),
+                new SplitRule([$pD], [$pD]),
+            ]),
         ]);
 
         // all pay for D
         $item2 = $this->tester->createBillItem([
             'id' => 'pizza',
             'cost' => 300,
-            'payments' => [
-                [$pA, $pA],
-                [$pB, $pB],
-                [$pC, $pC],
-                [$pA, $pD],
-                [$pB, $pD],
-                [$pC, $pD],
-            ],
+            'agreement' => new SplitAgreement([
+                new SplitRule([$pA], [$pA]),
+                new SplitRule([$pB], [$pB]),
+                new SplitRule([$pC], [$pC]),
+                new SplitRule([$pA, $pB, $pC], [$pD]),
+            ]),
         ]);
 
         // A doesn't buy, all pay for D
         $item3 = $this->tester->createBillItem([
             'id' => 'salad',
             'cost' => 300,
-            'payments' => [
-                [$pB, $pB],
-                [$pC, $pC],
-                [$pA, $pD],
-                [$pB, $pD],
-                [$pC, $pD],
-            ],
+            'agreement' => new SplitAgreement([
+                new SplitRule([$pB], [$pB]),
+                new SplitRule([$pC], [$pC]),
+                new SplitRule([$pA, $pB, $pC], [$pD]),
+            ]),
         ]);
         $item4 = $this->tester->createBillItem([
             'id' => 'meat',
             'cost' => 400,
-            'payments' => [
-                [$pA, $pA],
-                [$pB, $pB],
-                [$pC, $pC],
-                [$pC, $pD],
-            ],
+            'agreement' => new SplitAgreement([
+                new SplitRule([$pA], [$pA]),
+                new SplitRule([$pB], [$pB]),
+                new SplitRule([$pC], [$pC, $pD]),
+            ]),
         ]);
 
         $bill = $this->tester->createBill();

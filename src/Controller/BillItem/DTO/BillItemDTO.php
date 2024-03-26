@@ -21,11 +21,9 @@ class BillItemDTO
         #[Assert\PositiveOrZero]
         readonly public ?float $cost,
 
-        /** @var PaymentDTO[]|null */
-        #[Assert\Valid]
-        readonly public ?array $payments,
-
         readonly public ?MoneyBreakdownDTO $costBreakdown,
+
+        readonly public ?SplitAgreementDTO $agreement,
     ) {
     }
 }

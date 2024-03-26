@@ -6,7 +6,6 @@ namespace App\Domain\Bill\Model;
 
 use App\Domain\Money\Model\Money;
 use App\Domain\Money\Model\MoneyBreakdown;
-use App\Domain\ParticipantGroup\Model\ParticipantId;
 
 class BillItem
 {
@@ -19,8 +18,7 @@ class BillItem
 
         private Money $cost = new Money(),
 
-        /** @var Payment[] $payments */
-        private array $payments = [],
+        private SplitAgreement $agreement = new SplitAgreement([]),
     ) {
     }
 
@@ -54,39 +52,21 @@ class BillItem
         $this->cost = $cost;
     }
 
-    public function clearPayments(): void
+    public function getAgreement(): SplitAgreement
     {
-        $this->payments = [];
+        return $this->agreement;
     }
 
-    public function addPayment(Payment $payment): void
+    public function setAgreement(SplitAgreement $agreement): void
     {
-        $this->payments[] = $payment;
-    }
-
-    /**
-     * @param ParticipantId[] $participantIds
-     */
-    public function setPaymentsEqually(array $participantIds): void
-    {
-        // Split equally for all participants
-        $this->payments = array_map(
-            fn (ParticipantId $p) => new Payment($p, $p),
-            $participantIds
-        );
-    }
-
-    /**
-     * @return Payment[]
-     */
-    public function getPayments(): array
-    {
-        return $this->payments;
+        $this->agreement = $agreement;
     }
 
     public function calculateBreakdown(): MoneyBreakdown
     {
-        if (!$this->payments) {
+        $operations = $this->agreement->getOperations();
+
+        if (!$operations) {
             return new MoneyBreakdown();
         }
 
@@ -95,8 +75,8 @@ class BillItem
         // If the number is 3 than the share is divided and paid by 3 payers
         // etc...
         $numberOfPayersOfUserShare = [];
-        foreach ($this->payments as $direction) {
-            $userId = $direction->itemUser->id;
+        foreach ($operations as $operation) {
+            $userId = $operation->itemUser->id;
             $numberOfPayersOfUserShare[$userId] = $numberOfPayersOfUserShare[$userId] ?? 0;
             ++$numberOfPayersOfUserShare[$userId];
         }
@@ -112,11 +92,11 @@ class BillItem
 
         // Find how many each Payer should pay
         $payerShares = new MoneyBreakdown();
-        foreach ($this->payments as $direction) {
-            $payerId = $direction->itemPayer->id;
+        foreach ($operations as $operation) {
+            $payerId = $operation->itemPayer->id;
 
             /** @var Money $shareToAdd */
-            $shareToAdd = array_shift($userSplitShares[$direction->itemUser->id]);
+            $shareToAdd = array_shift($userSplitShares[$operation->itemUser->id]);
             $payerShares = $payerShares->add($payerId, $shareToAdd);
         }
 

@@ -11,7 +11,7 @@ use App\Domain\ParticipantGroup\Model\ParticipantId;
  * If participant pays for himself, in this case $itemPayer and $itemUser will be the same.
  * The exact amount for payment is calculated depending on other Payments in the BillItem.
  */
-readonly class Payment
+readonly class SplitOperation
 {
     public ParticipantId $itemPayer; // participant who should pay some amount for the Item
 
