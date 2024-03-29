@@ -72,7 +72,10 @@ class MongoBillRepository implements BillRepositoryInterface
 
     public function findByParticipantGroup(ParticipantGroupId $groupId): array
     {
-        $bsonBills = $this->getCollection()->find(['groupId' => $groupId->id])->toArray();
+        $bsonBills = $this->getCollection()->find(
+            ['groupId' => $groupId->id],
+            ['sort' => ['createdAt' => -1]]
+        )->toArray();
 
         return $this->mapper->arrayFromBson($bsonBills);
     }
