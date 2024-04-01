@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bills-be-deploy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: bills-be
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        app: bills-be
+    spec:
+      containers:
+        - name: bills-be-nginx
+          image: bills-be-nginx:latest
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 80
+        - name: bills-be-fpm
+          image: bills-be-fpm:latest
+          imagePullPolicy: Never
