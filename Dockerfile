@@ -32,8 +32,8 @@ COPY ./composer.json /code/composer.json
 COPY ./composer.lock /code/composer.lock
 RUN composer install --no-scripts
 COPY . /code
-RUN ./bin/console cache:clear
-RUN ./bin/console cache:warmup
+RUN ./bin/console cache:clear -e prod
+RUN ./bin/console cache:warmup -e prod
 
 FROM fpm AS fpm-dev
 # Xdebug extension
