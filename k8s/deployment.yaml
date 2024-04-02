@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: bills-be-deploy
+  name: bills-be
 spec:
   replicas: 1
   selector:
@@ -18,11 +18,11 @@ spec:
         app: bills-be
     spec:
       containers:
+        - name: bills-be-fpm
+          image: bills-be-fpm:latest
+          imagePullPolicy: Never
         - name: bills-be-nginx
           image: bills-be-nginx:latest
           imagePullPolicy: Never
           ports:
             - containerPort: 80
-        - name: bills-be-fpm
-          image: bills-be-fpm:latest
-          imagePullPolicy: Never
