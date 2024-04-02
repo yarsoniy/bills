@@ -17,12 +17,14 @@ spec:
       labels:
         app: bills-be
     spec:
+      imagePullSecrets:
+        - name: ghcr-pull-secret
       containers:
         - name: bills-be-fpm
-          image: bills-be-fpm:latest
-          imagePullPolicy: Never
+          image: ghcr.io/yarsoniy/bills-be-fpm:main
+          imagePullPolicy: IfNotPresent
         - name: bills-be-nginx
-          image: bills-be-nginx:latest
-          imagePullPolicy: Never
+          image: ghcr.io/yarsoniy/bills-be-nginx:main
+          imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 80
