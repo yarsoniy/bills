@@ -27,7 +27,7 @@ spec:
             - name: APP_ENV
               value: prod
             - name: APP_DEBUG
-              value: 1
+              value: "1"
             - name: MONGO_CONNECTION_URL
               value: mongodb://root:example@svc-mongo
         - name: bills-be-nginx
