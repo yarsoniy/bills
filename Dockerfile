@@ -34,6 +34,8 @@ RUN composer install --no-scripts
 COPY . /code
 RUN ./bin/console cache:clear -e prod
 RUN ./bin/console cache:warmup -e prod
+RUN chmod -R 777 ./var/cache/
+RUN chmod -R 777 ./var/log/
 
 FROM fpm AS fpm-dev
 # Xdebug extension
