@@ -22,7 +22,7 @@ spec:
       containers:
         - name: bills-be-fpm
           image: ghcr.io/yarsoniy/bills-be-fpm:main
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: Always
           env:
             - name: APP_ENV
               value: prod
@@ -32,6 +32,6 @@ spec:
               value: mongodb://root:example@svc-mongo
         - name: bills-be-nginx
           image: ghcr.io/yarsoniy/bills-be-nginx:main
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: Always
           ports:
             - containerPort: 80
