@@ -23,6 +23,13 @@ spec:
         - name: bills-be-fpm
           image: ghcr.io/yarsoniy/bills-be-fpm:main
           imagePullPolicy: IfNotPresent
+          env:
+            - name: APP_ENV
+              value: prod
+            - name: APP_DEBUG
+              value: 1
+            - name: MONGO_CONNECTION_URL
+              value: mongodb://root:example@svc-mongo
         - name: bills-be-nginx
           image: ghcr.io/yarsoniy/bills-be-nginx:main
           imagePullPolicy: IfNotPresent
