@@ -1,0 +1,25 @@
+name: Docker Images CI
+
+on:
+  push:
+    branches: [ "main" ]
+    tags: [ 'v*.*.*' ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+    - uses: actions/checkout@v3
+    - name: Build PHP-FPM image
+      run: docker build . --target fpm-prod --tag ghcr.io/yarsoniy/bills-be-fpm:${GITHUB_REF_NAME}
+    - name: Build Nginx image
+      run: docker build . --target nginx --tag ghcr.io/yarsoniy/bills-be-nginx:${GITHUB_REF_NAME}
+    - name: Log in to registry
+      run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u $ --password-stdin
+    - name: Push PHP-FPM image
+      run: docker push ghcr.io/yarsoniy/bills-be-fpm:${GITHUB_REF_NAME}
+    - name: Push Nginx image
+      run: docker push ghcr.io/yarsoniy/bills-be-nginx:${GITHUB_REF_NAME}
