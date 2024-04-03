@@ -30,6 +30,8 @@ spec:
           envFrom:
             - configMapRef:
                 name: cm-bills-be-fpm
+            - secretRef:
+                name: secrets-bills-be-fpm
         - name: bills-be-nginx
           image: nginx:1.15
           imagePullPolicy: Always

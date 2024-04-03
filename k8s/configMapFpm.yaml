@@ -6,4 +6,3 @@ data:
   TZ: 'Europe/Kiev'
   APP_ENV: "prod"
   APP_DEBUG: "0"
-  MONGO_CONNECTION_URL: "mongodb://root:example@svc-mongo"
