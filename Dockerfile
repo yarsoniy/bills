@@ -22,7 +22,6 @@ RUN docker-php-ext-install \
 
 RUN pecl install mongodb-1.15.3 && docker-php-ext-enable mongodb
 COPY --from=composer:2.5.5 /usr/bin/composer /usr/bin/composer
-ENV TZ 'Europe/Kiev'
 
 WORKDIR /code
 
@@ -41,9 +40,3 @@ FROM fpm AS fpm-dev
 # Xdebug extension
 RUN pecl install xdebug-3.2.1 && docker-php-ext-enable xdebug
 COPY ./docker/build/xdebug.ini /usr/local/etc/php/conf.d/xdebug.ini
-
-###### Nginx
-FROM nginx:1.15 AS nginx
-COPY ./docker/build/nginx.conf /etc/nginx/conf.d/default.conf
-ENV TZ 'Europe/Kiev'
-WORKDIR /code
