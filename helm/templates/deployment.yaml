@@ -31,8 +31,6 @@ spec:
           envFrom:
             - configMapRef:
                 name: configmap-{{.Values.appName}}-fpm
-            - secretRef:
-                name: secrets-{{.Values.appName}}-fpm
         - name: {{.Values.appName}}-nginx
           image: nginx:1.15
           imagePullPolicy: Always
