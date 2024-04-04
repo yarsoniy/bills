@@ -1,7 +1,8 @@
 kind: ConfigMap
 apiVersion: v1
 metadata:
-  name: cm-bills-be-fpm
+  name: configmap-{{.Values.appName}}-fpm
+  namespace: {{.Release.Namespace}}
 data:
   TZ: 'Europe/Kiev'
   APP_ENV: "prod"

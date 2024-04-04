@@ -1,12 +1,13 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: bills-be
+  name: {{.Values.appName}}
+  namespace: {{.Release.Namespace}}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: bills-be
+      app: {{.Values.appName}}
   strategy:
     type: RollingUpdate
     rollingUpdate:
@@ -15,24 +16,24 @@ spec:
   template:
     metadata:
       labels:
-        app: bills-be
+        app: {{.Values.appName}}
     spec:
       volumes:
         - name: nginx-config
           configMap:
-            name: cm-bills-be-nginx-config
+            name: configmap-{{.Values.appName}}-nginx-config
       imagePullSecrets:
         - name: ghcr-pull-secret
       containers:
-        - name: bills-be-fpm
+        - name: {{.Values.appName}}-fpm
           image: ghcr.io/yarsoniy/bills-be-fpm:main
           imagePullPolicy: Always
           envFrom:
             - configMapRef:
-                name: cm-bills-be-fpm
+                name: configmap-{{.Values.appName}}-fpm
             - secretRef:
-                name: secrets-bills-be-fpm
-        - name: bills-be-nginx
+                name: secrets-{{.Values.appName}}-fpm
+        - name: {{.Values.appName}}-nginx
           image: nginx:1.15
           imagePullPolicy: Always
           ports:

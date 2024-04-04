@@ -1,13 +1,14 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: svc-bills-be
+  name: svc-{{.Values.appName}}
+  namespace: {{.Release.Namespace}}
   labels:
-    app: bills-be
+    app: {{.Values.appName}}
 spec:
   type: ClusterIP
   selector:
-    app: bills-be
+    app: {{.Values.appName}}
   ports:
   - port: 80
     targetPort: 80

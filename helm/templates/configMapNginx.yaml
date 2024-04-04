@@ -1,7 +1,8 @@
 kind: ConfigMap
 apiVersion: v1
 metadata:
-  name: cm-bills-be-nginx-config
+  name: configmap-{{.Values.appName}}-nginx-config
+  namespace: {{.Release.Namespace}}
 data:
   nginx.conf: |
     server {
