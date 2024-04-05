@@ -22,7 +22,7 @@ dev:
       - name: APP_ENV
         value: dev
       - name: APP_DEBUG
-        value: 1
+        value: "1"
       - name: PHP_IDE_CONFIG
         value: "serverName=bills-be-fpm"
 
