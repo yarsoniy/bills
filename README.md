@@ -5,3 +5,21 @@ Fololow instruction from https://github.com/yarsoniy/bills-k8s/blob/main/README.
 ```
 helm install bills-be ./helm/ --values ./helm/values.yaml -n bills
 ```
+
+## Local development mode
+### Install devspace
+https://www.devspace.sh/docs/getting-started/installation
+
+### Switch devspace to the correct k8s context and namespace
+```
+#enter and select from the list
+devspace use context 
+
+#enter and select from the list
+devspace use namespace
+```
+
+### To start a devspace session
+```
+devspace dev
+```

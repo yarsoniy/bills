@@ -25,7 +25,6 @@ COPY --from=composer:2.5.5 /usr/bin/composer /usr/bin/composer
 
 WORKDIR /code
 
-FROM fpm AS fpm-prod
 ENV COMPOSER_ALLOW_SUPERUSER=1
 COPY ./composer.json /code/composer.json
 COPY ./composer.lock /code/composer.lock
@@ -35,6 +34,8 @@ RUN ./bin/console cache:clear -e prod
 RUN ./bin/console cache:warmup -e prod
 RUN chmod -R 777 ./var/cache/
 RUN chmod -R 777 ./var/log/
+
+FROM fpm AS fpm-prod
 
 FROM fpm AS fpm-dev
 # Xdebug extension

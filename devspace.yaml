@@ -1,0 +1,30 @@
+version: v2beta1
+name: bills
+
+# This is a list of `pipelines` that DevSpace can execute (you can define your own)
+pipelines:
+  # This is the pipeline for the main command: `devspace dev` (or `devspace run-pipeline dev`)
+  dev:
+    run: |-
+      start_dev app                # Start dev mode "app" (see "dev" section)
+
+# This is a list of `dev` containers that are based on the containers created by your deployments
+dev:
+  app:
+    # Search for the container that runs this image
+    labelSelector:
+      app: bills-be
+    container: bills-be-fpm
+    # Replace the container image with this dev-optimized image (allows to skip image building during development)
+    devImage: ghcr.io/yarsoniy/bills-be-fpm:dev-main
+    # Sync files between the local filesystem and the development container
+    reversePorts:
+      - port: "9003:9003"   # host-port:container-port
+    sync:
+      - path: ./
+        printLogs: true
+        excludePaths:
+          - /var/log/
+        uploadExcludePaths:
+          - /vendor/
+
