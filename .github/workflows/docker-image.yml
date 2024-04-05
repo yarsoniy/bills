@@ -13,9 +13,13 @@ jobs:
       packages: write
     steps:
     - uses: actions/checkout@v3
-    - name: Build PHP-FPM image
+    - name: Build image
       run: docker build . --target fpm-prod --tag ghcr.io/yarsoniy/bills-be-fpm:${GITHUB_REF_NAME}
     - name: Log in to registry
       run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u $ --password-stdin
-    - name: Push PHP-FPM image
+    - name: Push image
       run: docker push ghcr.io/yarsoniy/bills-be-fpm:${GITHUB_REF_NAME}
+    - name: Build and push dev image
+      run: |
+        docker build . --target fpm-dev --tag ghcr.io/yarsoniy/bills-be-fpm:dev-${GITHUB_REF_NAME}
+        docker push ghcr.io/yarsoniy/bills-be-fpm:dev-${GITHUB_REF_NAME}
