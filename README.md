@@ -20,6 +20,13 @@ devspace use namespace
 ```
 
 ### To start a devspace session
+This will replace the normal pod to a despace pod
 ```
 devspace dev
 ```
+
+### To cleanup
+```
+devspace purge
+```
+

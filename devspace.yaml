@@ -18,13 +18,32 @@ dev:
     # Replace the container image with this dev-optimized image (allows to skip image building during development)
     devImage: ghcr.io/yarsoniy/bills-be-fpm:dev-main
     # Sync files between the local filesystem and the development container
+    env:
+      - name: APP_ENV
+        value: dev
+      - name: APP_DEBUG
+        value: 1
+      - name: PHP_IDE_CONFIG
+        value: "serverName=bills-be-fpm"
+
     reversePorts:
       - port: "9003:9003"   # host-port:container-port
     sync:
       - path: ./
-        printLogs: true
         excludePaths:
+          - /.git/
+          - /.idea/
           - /var/log/
-        uploadExcludePaths:
+          - /var/cache/
           - /vendor/
+          - /tools/php-cs-fixer/vendor/
+      - path: ./var/cache/
+        initialSync: mirrorRemote
+        disableUpload: true
+      - path: ./vendor/
+        initialSync: mirrorRemote
+        disableUpload: true
+      - path: ./tools/php-cs-fixer/vendor/
+        initialSync: mirrorRemote
+        disableUpload: true
 
