@@ -5,6 +5,10 @@ Fololow instruction from https://github.com/yarsoniy/bills-k8s/blob/main/README.
 ```
 helm install bills-be ./helm/ --values ./helm/values.yaml -n bills
 ```
+To deploy changes use:
+```
+helm upgrade bills-be ./helm/ --values ./helm/values.yaml -n bills
+```
 
 ## Local development mode
 ### Install devspace
