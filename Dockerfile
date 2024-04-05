@@ -20,6 +20,8 @@ RUN docker-php-ext-install \
     pdo_pgsql \
     && rm -rf /tmp/* /var/tmp/* /var/cache/*
 
+RUN pecl install opentelemetry && docker-php-ext-enable opentelemetry
+
 RUN pecl install mongodb-1.15.3 && docker-php-ext-enable mongodb
 COPY --from=composer:2.5.5 /usr/bin/composer /usr/bin/composer
 
